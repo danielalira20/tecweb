@@ -3,7 +3,7 @@ Repositorio de tecnologias web
 
 #Información del Repositorio
 **Matrícula**: 202337733
-**Nombre**: Daniela Lira
+**Nombre**: Daniela Lira Huerta
 **Materia**: Tecnologías Web
 **Periodo**: Otoño
 
