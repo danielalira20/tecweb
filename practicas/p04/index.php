@@ -142,16 +142,17 @@
     echo "<h4>Transformar el valor booleano de \$c y \$e en uno que se pueda mostrar con echo:</h4>";
     echo "<p>c: " . ($c ? 'true' : 'false') . "</p>";
     echo "<p>e: " . ($e ? 'true' : 'false') . "</p>";
-    echo "<p>f: " . ($f ? 'true' : 'false') . "</p>";
 
     unset($a, $b, $c, $d, $e, $f);
 ?>
 
-
-
-
-
-
-
+<h2>Ejercicio 7</h2>
+    <p>Usando la variable predefinida $_SERVER, determina lo siguiente:</p>
+    <ul>
+        <li>a. La versión de Apache y PHP: <?php echo htmlspecialchars($_SERVER['SERVER_SOFTWARE']); ?></li>
+        <li>b. El nombre del sistema operativo (servidor): <?php echo htmlspecialchars(PHP_OS); ?></li>
+        <li>c. El idioma del navegador (cliente): <?php echo htmlspecialchars($_SERVER['HTTP_ACCEPT_LANGUAGE']); ?></li>
+    </ul>
+   
 </body>
 </html>
