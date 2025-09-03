@@ -88,5 +88,22 @@
         }
         ?>
 
+        <h2>Ejercicio 4</h2>
+        <p>Lee y muestra los valores de las variables del ejercicio anterior, pero ahora con la ayuda de la matriz $GLOBALS o del modificador global de PHP.</p>
+
+        <?php
+            echo "<p>\$a: " . $GLOBALS['a'] . "</p>";
+            echo "<p>\$b: " . $GLOBALS['b'] . "</p>";
+            echo "<p>\$c: " . $GLOBALS['c'] . "</p>";
+
+            echo "<p>\$z:</p>";
+            foreach ($GLOBALS['z'] as $indice => $valor) {
+                echo "<p>Índice $indice: $valor</p>";
+            }
+        ?>
+
+
+
+
 </body>
 </html>
