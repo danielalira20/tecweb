@@ -102,6 +102,19 @@
             }
         ?>
 
+        <h2>Ejercicio 5</h2>
+    <p>Dar el valor de las variables $a, $b, $c al final del siguiente script:</p>
+    <?php
+        $a = "7 personas";
+        $b = (integer) $a;
+        $a = "9E3";
+        $c = (double) $a;
+        echo "<p>\$a es: $a</p>";
+        echo "<p>\$b es: $b</p>";
+        echo "<p>\$c es: $c</p>";
+    ?>
+
+
 
 
 
