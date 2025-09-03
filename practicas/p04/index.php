@@ -58,5 +58,35 @@
     todos muestran el mismo valor. Esto demuestra cómo las referencias en PHP 
     mantienen sincronizados los valores entre variables.</p>
 
+    <h2>Ejercicio 3</h2>
+    <p>Muestra el contenido de cada variable inmediatamente después de cada asignación:</p>
+    <?php
+        $a = "PHP5 ";
+        echo "<p>1. \$a = $a</p>";
+
+        $z[] = &$a;
+        echo "<p>2. \$z[0] (referencia a \$a) = {$z[0]}</p>";
+
+        $b = "5a version de PHP";
+        echo "<p>3. \$b = $b</p>";
+
+        $c = (int)$b * 10;
+        echo "<p>4. \$c = $c</p>";
+
+        $a .= $b;
+        echo "<p>5. \$a después de concatenar con \$b = $a</p>";
+
+        $b = (int)$b * $c;
+        echo "<p>6. \$b después de multiplicar con \$c = $b</p>";
+
+        $z[0] = "MySQL";
+        echo "<p>7. \$z[0] modificado = {$z[0]}</p>";
+
+        echo "<p>Contenido completo de \$z:</p>";
+        foreach ($z as $key => $value) {
+            echo "Índice $key: $value<br>";
+        }
+        ?>
+
 </body>
 </html>
