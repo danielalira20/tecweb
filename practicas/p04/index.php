@@ -29,6 +29,8 @@
         echo '<li>$_element1 es válida porque inicia con guión bajo.</li>';
         echo '<li>$house*5 es inválida porque el símbolo * no está permitido.</li>';
         echo '</ul>';
+
+        unset($_myvar, $_7var, $myvar, $var7, $_element1);
     ?>
 
     <h2>Ejercicio 2</h2>
@@ -51,6 +53,8 @@
         echo "<p>El valor de \$a es: $a</p>";
         echo "<p>El valor de \$b es: $b</p>";
         echo "<p>El valor de \$c es: $c</p>";
+
+         unset($a, $b, $c);
     ?>
 
     <p>En el segundo bloque, se reasignó el valor de <code>$a</code> a "PHP server". 
@@ -112,7 +116,38 @@
         echo "<p>\$a es: $a</p>";
         echo "<p>\$b es: $b</p>";
         echo "<p>\$c es: $c</p>";
+        unset($a, $b, $c);  
     ?>
+
+     <h2>Ejercicio 6</h2>
+   <p>Dar y comprobar el valor booleano de las variables $a, $b, $c, $d, $e y $f usando var_dump():</p>
+
+<?php
+    $a = "0";
+    $b = "TRUE";
+    $c = FALSE;
+    $d = ($a OR $b);
+    $e = ($a AND $c);
+    $f = ($a XOR $b);
+
+    echo "<pre>";
+    echo "\$a = "; var_dump($a);
+    echo "\$b = "; var_dump($b);
+    echo "\$c = "; var_dump($c);
+    echo "\$d = "; var_dump($d);
+    echo "\$e = "; var_dump($e);
+    echo "\$f = "; var_dump($f);
+    echo "</pre>";
+
+    echo "<h4>Transformar el valor booleano de \$c y \$e en uno que se pueda mostrar con echo:</h4>";
+    echo "<p>c: " . ($c ? 'true' : 'false') . "</p>";
+    echo "<p>e: " . ($e ? 'true' : 'false') . "</p>";
+    echo "<p>f: " . ($f ? 'true' : 'false') . "</p>";
+
+    unset($a, $b, $c, $d, $e, $f);
+?>
+
+
 
 
 
