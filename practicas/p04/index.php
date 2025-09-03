@@ -30,5 +30,33 @@
         echo '<li>$house*5 es inválida porque el símbolo * no está permitido.</li>';
         echo '</ul>';
     ?>
+
+    <h2>Ejercicio 2</h2>
+    <p>Proporcionar los valores de $a, $b, $c como sigue:</p>
+    <?php 
+        $a = "ManejadorSQL";
+        $b = 'MySQL';
+        $c = &$a;
+    ?>
+    <p> Ahora muestra el contenido de cada variable </p>
+    <?php 
+        echo "<p>El valor de \$a es: $a</p>";
+        echo "<p>El valor de \$b es: $b</p>";
+        echo "<p>El valor de \$c es: $c</p>";
+    ?>
+    <p>Agrega al código actual las siguientes asignaciones: </p>
+    <?php    
+        $a = "PHP server";
+        $b = &$a;
+        echo "<p>El valor de \$a es: $a</p>";
+        echo "<p>El valor de \$b es: $b</p>";
+        echo "<p>El valor de \$c es: $c</p>";
+    ?>
+
+    <p>En el segundo bloque, se reasignó el valor de <code>$a</code> a "PHP server". 
+    Como <code>$b</code> y <code>$c</code> son referencias a <code>$a</code>, 
+    todos muestran el mismo valor. Esto demuestra cómo las referencias en PHP 
+    mantienen sincronizados los valores entre variables.</p>
+
 </body>
 </html>
