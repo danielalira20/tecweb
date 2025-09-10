@@ -20,51 +20,74 @@
 
     <!-- Formulario -->
     <form action="http://52.43.117.247/neo/classroom/tw/concurso.php" method="post">
-      
-      <p>Información del Participante</p>
-      <ul>
-        <li>
-          Nombre: 
-          <input type="text" name="name" placeholder="Escribe tu nombre" required>
-        </li>
-        <li>
-          Dirección de E-mail: 
-          <input type="email" name="email" placeholder="ejemplo@correo.com" required>
-        </li>
-        <li>
-          Número Telefónico: 
-          <input type="tel" name="phone" placeholder="555-123-4567" required>
-        </li>
-        <li>
-          Mis tenis son tan feos porque... <br>
-          <textarea name="descripcion" rows="4" cols="60" maxlength="300" placeholder="Escribe aquí tu justificación"></textarea>
-        </li>
-      </ul>
 
-      <!-- Sección de personalización de los tenis -->
-      <h2>Diseña tus Mike personalizados:</h2>
+      <!-- Información Personal -->
+      <fieldset>
+        <legend>Información Personal</legend>
+        <ul>
+          <li>
+            Nombre: 
+            <input type="text" name="name" placeholder="Escribe tu nombre" required>
+          </li>
+          <li>
+            Dirección de E-mail: 
+            <input type="email" name="email" placeholder="ejemplo@correo.com" required>
+          </li>
+          <li>
+            Número Telefónico: 
+            <input type="tel" name="phone" placeholder="555-123-4567" required>
+          </li>
+          <li>
+            Mis tenis son tan feos porque... <br>
+            <textarea name="descripcion" rows="4" cols="60" maxlength="300" placeholder="Escribe aquí tu justificación"></textarea>
+          </li>
+        </ul>
+      </fieldset>
 
-      <p>Diseño personalizado del Tenis</p>
+      <!-- Diseño personalizado del Tenis -->
+      <fieldset>
+        <legend>Diseño personalizado del Tenis</legend>
 
-      <p>Color <em>(escoge uno)</em>:</p>
-      <ul>
-        <li><input type="radio" name="color" value="rojo" checked> Rojo</li>
-        <li><input type="radio" name="color" value="azul"> Azul</li>
-        <li><input type="radio" name="color" value="negro"> Negro</li>
-        <li><input type="radio" name="color" value="plateado"> Plateado</li>
-      </ul>
+        <!-- Colores -->
+        <fieldset>
+          <legend>Color (escoge uno)</legend>
+          <ul>
+            <li><input type="radio" name="color" value="rojo" checked> Rojo</li>
+            <li><input type="radio" name="color" value="azul"> Azul</li>
+            <li><input type="radio" name="color" value="negro"> Negro</li>
+            <li><input type="radio" name="color" value="plateado"> Plateado</li>
+          </ul>
+        </fieldset>
 
-      <p>Características <em>(escoge tantas como quieras)</em>:</p>
-      <ul>
-        <li><input type="checkbox" name="features[]" value="cordones"> Cordones brillantes</li>
-        <li><input type="checkbox" name="features[]" value="logo" checked> Logo metálico</li>
-        <li><input type="checkbox" name="features[]" value="suela"> Suela luminosa</li>
-        <li><input type="checkbox" name="features[]" value="wifi"> WiFi integrado</li>
-      </ul>
+        <!-- Características -->
+        <fieldset>
+          <legend>Características (escoge tantas como quieras)</legend>
+          <ul>
+            <li><input type="checkbox" name="features[]" value="cordones"> Cordones brillantes</li>
+            <li><input type="checkbox" name="features[]" value="logo" checked> Logo metálico</li>
+            <li><input type="checkbox" name="features[]" value="suela"> Suela luminosa</li>
+            <li><input type="checkbox" name="features[]" value="wifi"> WiFi integrado</li>
+          </ul>
+        </fieldset>
 
-      <p>Talla</p>
-      <p>Las medidas reflejan el estándar masculino:</p>
-      <input type="number" name="talla" min="22" max="32" placeholder="Ej. 26">
+        <!-- Talla -->
+        <fieldset>
+          <legend>Talla</legend>
+          <label>Las medidas reflejan el estándar masculino:</label><br>
+          <select name="talla" size="1" required>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+          </select>
+        </fieldset>
+
+      </fieldset>
 
       <!-- Botones submit y reset -->
       <p>
