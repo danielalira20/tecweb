@@ -4,98 +4,421 @@
     <meta charset="utf-8">
     <title>Registro al Concurso</title>
     <style type="text/css">
-      ol, ul { 
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #0a0a0a;
+        color: #ffffff;
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+      
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+      
+      h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 60px;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+        position: relative;
+      }
+      
+      h1::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, #ff6b35, #f7931e);
+        border-radius: 2px;
+      }
+      
+      .intro {
+        background: #111111;
+        border: 1px solid #222222;
+        border-radius: 12px;
+        padding: 40px;
+        margin-bottom: 40px;
+        text-align: center;
+        font-size: 1.1rem;
+        color: #cccccc;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      
+      .intro em {
+        color: #ff6b35;
+        font-style: normal;
+        font-weight: 600;
+      }
+      
+      form {
+        background: #111111;
+        border: 1px solid #222222;
+        border-radius: 16px;
+        padding: 50px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+      
+      fieldset {
+        border: none;
+        margin-bottom: 40px;
+        background: #0f0f0f;
+        border: 1px solid #1a1a1a;
+        border-radius: 12px;
+        padding: 30px;
+        transition: all 0.3s ease;
+      }
+      
+      fieldset:hover {
+        border-color: #333333;
+        background: #121212;
+      }
+      
+      legend {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #ffffff;
+        padding: 0 15px;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+      }
+      
+      ol, ul {
         list-style-type: none;
+      }
+      
+      li {
+        margin-bottom: 20px;
+        color: #ffffff;
+        font-weight: 400;
+      }
+      
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #2a2a2a;
+        border-radius: 8px;
+        background: #1a1a1a;
+        color: #ffffff;
+        font-size: 1rem;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+      }
+      
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="tel"]:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #ff6b35;
+        background: #1f1f1f;
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+      }
+      
+      ::placeholder {
+        color: #666666;
+      }
+      
+      textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: 'Inter', sans-serif;
+      }
+      
+      input[type="radio"],
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin-right: 15px;
+        accent-color: #ff6b35;
+        cursor: pointer;
+      }
+      
+      li:has(input[type="radio"]),
+      li:has(input[type="checkbox"]) {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+      
+      li:has(input[type="radio"]):hover,
+      li:has(input[type="checkbox"]):hover {
+        background: #1a1a1a;
+        border-color: #333333;
+      }
+      
+      li:has(input[type="radio"]:checked),
+      li:has(input[type="checkbox"]:checked) {
+        background: rgba(255, 107, 53, 0.08);
+        border-color: #ff6b35;
+        color: #ffffff;
+      }
+      
+      select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+      }
+      
+      select option {
+        background: #1a1a1a;
+        color: #ffffff;
+        padding: 12px;
+      }
+      
+      .buttons {
+        text-align: center;
+        margin-top: 50px;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+      }
+      
+      input[type="submit"],
+      input[type="reset"] {
+        padding: 16px 32px;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 160px;
+      }
+      
+      input[type="submit"] {
+        background: #ff6b35;
+        color: #ffffff;
+        box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3);
+      }
+      
+      input[type="submit"]:hover {
+        background: #e55a2b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+      }
+      
+      input[type="submit"]:active {
+        transform: translateY(0);
+      }
+      
+      input[type="reset"] {
+        background: transparent;
+        color: #cccccc;
+        border: 2px solid #333333;
+      }
+      
+      input[type="reset"]:hover {
+        background: #1a1a1a;
+        border-color: #555555;
+        color: #ffffff;
+        transform: translateY(-2px);
+      }
+      
+      input[type="reset"]:active {
+        transform: translateY(0);
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px 15px;
+        }
+        
+        h1 {
+          font-size: 2.2rem;
+          margin-bottom: 40px;
+        }
+        
+        form {
+          padding: 30px 25px;
+        }
+        
+        fieldset {
+          padding: 25px 20px;
+        }
+        
+        .buttons {
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+        }
+        
+        input[type="submit"],
+        input[type="reset"] {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+      
+      /* Dark mode enhancements */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #0a0a0a;
+        }
+      }
+      
+      /* Focus styles for accessibility */
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
+        outline: 2px solid #ff6b35;
+        outline-offset: 2px;
+      }
+      
+      /* Subtle animations */
+      fieldset {
+        animation: fadeInUp 0.6s ease-out;
+      }
+      
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: #333333;
+        border-radius: 4px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: #444444;
       }
     </style>
   </head>
-
+ 
   <body>
-
-    <h1>Registro al Concurso &ldquo;Chidos mis Tenis&rdquo;</h1>
-
-    <p>¿Quieres cambiar tus viejos tenis por un par personalizado de Tenis Mike&#174;?<br><br>
-      Justifica el por qué tus tenis se <em>tienen que</em> ir y tú puedes ser uno de los diez afortunados ganadores.
-    </p>
-
-    <!-- Formulario -->
-    <form action="http://52.43.117.247/neo/classroom/tw/concurso.php" method="post">
-
-      <!-- Información Personal -->
-      <fieldset>
-        <legend>Información Personal</legend>
-        <ul>
-          <li>
-            Nombre: 
-            <input type="text" name="name" placeholder="Escribe tu nombre" required>
-          </li>
-          <li>
-            Dirección de E-mail: 
-            <input type="email" name="email" placeholder="ejemplo@correo.com" required>
-          </li>
-          <li>
-            Número Telefónico: 
-            <input type="tel" name="phone" placeholder="555-123-4567" required>
-          </li>
-          <li>
-            Mis tenis son tan feos porque... <br>
-            <textarea name="descripcion" rows="4" cols="60" maxlength="300" placeholder="Escribe aquí tu justificación"></textarea>
-          </li>
-        </ul>
-      </fieldset>
-
-      <!-- Diseño personalizado del Tenis -->
-      <fieldset>
-        <legend>Diseño personalizado del Tenis</legend>
-
-        <!-- Colores -->
+    <div class="container">
+      <h1>Registro al Concurso "Chidos mis Tenis"</h1>
+      
+      <div class="intro">
+        <p>¿Quieres cambiar tus viejos tenis por un par personalizado de Tenis Mike®?<br><br>
+        Justifica el por qué tus tenis se <em>tienen que</em> ir y tú puedes ser uno de los diez afortunados ganadores.</p>
+      </div>
+      
+      <form action="http://52.43.117.247/neo/classroom/tw/concurso.php" method="post">
+         
+        <!-- Información Personal -->
         <fieldset>
-          <legend>Color (escoge uno)</legend>
+          <legend>Información Personal</legend>
           <ul>
-            <li><input type="radio" name="color" value="rojo" checked> Rojo</li>
-            <li><input type="radio" name="color" value="azul"> Azul</li>
-            <li><input type="radio" name="color" value="negro"> Negro</li>
-            <li><input type="radio" name="color" value="plateado"> Plateado</li>
+            <li>
+              Nombre: 
+              <input type="text" name="name" placeholder="Escribe tu nombre completo" required>
+            </li>
+            <li>
+              Dirección de E-mail: 
+              <input type="email" name="email" placeholder="tu.email@ejemplo.com" required>
+            </li>
+            <li>
+              Número Telefónico: 
+              <input type="tel" name="phone" placeholder="555-123-4567" required>
+            </li>
+            <li>
+              Mis tenis son tan feos porque…
+              <textarea name="story" rows="4" maxlength="300" placeholder="Cuéntanos tu historia en máximo 300 caracteres"></textarea>
+            </li>
           </ul>
         </fieldset>
-
-        <!-- Características -->
+   
+        <!-- Diseño personalizado del Tenis -->
         <fieldset>
-          <legend>Características (escoge tantas como quieras)</legend>
-          <ul>
-            <li><input type="checkbox" name="features[]" value="cordones"> Cordones brillantes</li>
-            <li><input type="checkbox" name="features[]" value="logo" checked> Logo metálico</li>
-            <li><input type="checkbox" name="features[]" value="suela"> Suela luminosa</li>
-            <li><input type="checkbox" name="features[]" value="wifi"> WiFi integrado</li>
-          </ul>
+          <legend>Diseño personalizado del Tenis</legend>
+   
+          <!-- Colores -->
+          <fieldset>
+            <legend>Color (escoge uno)</legend>
+            <ul>
+              <li><input type="radio" name="color" value="rojo" checked id="rojo"><label for="rojo">Rojo</label></li>
+              <li><input type="radio" name="color" value="azul" id="azul"><label for="azul">Azul</label></li>
+              <li><input type="radio" name="color" value="negro" id="negro"><label for="negro">Negro</label></li>
+              <li><input type="radio" name="color" value="plateado" id="plateado"><label for="plateado">Plateado</label></li>
+            </ul>
+          </fieldset>
+   
+          <!-- Características -->
+          <fieldset>
+            <legend>Características (escoge tantas como quieras)</legend>
+            <ul>
+              <li><input type="checkbox" name="features[]" value="cordones" id="cordones"><label for="cordones">Cordones brillantes</label></li>
+              <li><input type="checkbox" name="features[]" value="logo" id="logo"><label for="logo">Logo metálico</label></li>
+              <li><input type="checkbox" name="features[]" value="suela" id="suela"><label for="suela">Suela luminosa</label></li>
+              <li><input type="checkbox" name="features[]" value="wifi" id="wifi"><label for="wifi">WiFi integrado</label></li>
+            </ul>
+          </fieldset>
+   
+          <!-- Talla -->
+          <fieldset>
+            <legend>Talla</legend>
+            <label>Las medidas reflejan el estándar masculino:</label>
+            <select name="size" size="1" required>
+              <option value="">Selecciona una talla</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+            </select>
+          </fieldset>
+   
         </fieldset>
-
-        <!-- Talla -->
-        <fieldset>
-          <legend>Talla</legend>
-          <label>Las medidas reflejan el estándar masculino:</label><br>
-          <select name="talla" size="1" required>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-          </select>
-        </fieldset>
-
-      </fieldset>
-
-      <!-- Botones submit y reset -->
-      <p>
-        <input type="submit" value="Enviar Registro">
-        <input type="reset" value="Borrar">
-      </p>
-
-    </form>
-
+   
+        <div class="buttons">
+          <input type="submit" value="Enviar Registro">
+          <input type="reset" value="Borrar">
+        </div>
+      </form>
+    </div>
   </body>
 </html>
