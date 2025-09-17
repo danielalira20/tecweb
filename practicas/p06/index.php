@@ -17,5 +17,18 @@
         es_multiplo7_5($_GET['numero']);
         }
     ?>
+
+    <h2>Ejercicio 2</h2>
+    <p>
+    Crea un programa para la generación repetitiva de 3 número aleatorios hasta obtener una secuencia compuesta por:impar, par, impar.
+    <br>
+    Estos números deben almacenarse en una matriz de Mx3, donde M es el número de filas y 3 el número de columnas. </p>
+
+    <?php
+        require_once __DIR__ . '/src/funciones.php';
+        secuencia_matriz();
+    ?>
+
+        
 </body>
 </html>
