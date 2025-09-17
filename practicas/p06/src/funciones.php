@@ -11,7 +11,7 @@ function es_multiplo7_5($num)
     }
 }
 
-function secuencia_matriz(){
+function secuencia_matriz() {
     $secuencia = [];
     $i = 0;
     
@@ -24,16 +24,31 @@ function secuencia_matriz(){
         $n1 = rand(1, 999); 
         $n2 = rand(1, 999);
         $n3 = rand(1, 999);
-    
+        
+       
+        $secuencia[] = [$n1, $n2, $n3];
+
+        
         if (!esPar($n1) && esPar($n2) && !esPar($n3)) {
             $total = $i * 3;
-            echo "<H3>R= " . $total . " números obtenidos en " . $i . " iteraciones.\n</H3>";
+
+            echo "<h3>Matriz generada:</h3>";
+            echo "<table border='1' cellpadding='5'>";
+            foreach ($secuencia as $fila) {
+                echo "<tr>";
+                foreach ($fila as $num) {
+                    echo "<td>$num</td>";
+                }
+                echo "</tr>";
+            }
+            echo "</table>";
+
+            echo "<h3>R= " . $total . " números obtenidos en " . $i . " iteraciones.</h3>";
             break; 
-        } else {
-            $secuencia[$i] = [$n1, $n2, $n3];
         }
     }
-} 
+}
+
 
 function primer_numero($numero)
 {
@@ -42,11 +57,12 @@ function primer_numero($numero)
         $n1 = rand(1, 999);
         if($n1 % $numero == 0)
         {
-            echo '<h4>R= El primer número entero obtenido aleatoriamente que es múltiplo de '.$n1.' es: '.$numero.'</h4>';
+            echo '<h4>R= El primer número entero obtenido aleatoriamente que es múltiplo de '.$numero.' es: '.$n1.'</h4>';
             break;
         }
     }
 }
+
 
 function primer_numero_do_while($numero)
 {
@@ -60,6 +76,28 @@ function primer_numero_do_while($numero)
         }
     } while(true);
 }
+
+function abecedario()
+{
+    $letras = [];
+    for ($i = 97; $i <= 122; $i++) {
+        $letras[$i] = chr($i);
+    }
+
+    echo "<table border='1' cellpadding='5' cellspacing='0'>";
+    echo "<tr><th>Índice</th><th>Valor</th></tr>";
+
+    foreach ($letras as $key => $value) {
+        echo "<tr>";
+        echo "<td>$key</td><td>$value</td>";
+        echo "</tr>";
+    }
+
+    echo "</table>";
+}
+
+
+
 
 
 ?>
