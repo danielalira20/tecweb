@@ -35,6 +35,32 @@ function secuencia_matriz(){
     }
 } 
 
+function primer_numero($numero)
+{
+    while(true)
+    {
+        $n1 = rand(1, 999);
+        if($n1 % $numero == 0)
+        {
+            echo '<h4>R= El primer número entero obtenido aleatoriamente que es múltiplo de '.$n1.' es: '.$numero.'</h4>';
+            break;
+        }
+    }
+}
+
+function primer_numero_do_while($numero)
+{
+    do
+    {
+        $n1 = rand(1, 999);
+        if($n1 % $numero == 0)
+        {
+            echo '<h4>R= El primer número entero obtenido aleatoriamente que es múltiplo de '.$numero.' es: '.$n1.'</h4>';
+            break;
+        }
+    } while(true);
+}
+
 
 ?>
 

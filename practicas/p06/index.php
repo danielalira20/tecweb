@@ -29,6 +29,36 @@
         secuencia_matriz();
     ?>
 
+    <h2>Ejercicio 3</h2>
+    <p>Utiliza un ciclo while para encontrar el primer número entero obtenido aleatoriamente,
+    pero que además sea múltiplo de un número dado.</p>
+    <ul>
+        <li>
+        Crear una variante de este script utilizando el ciclo do-while.
+        </li>
+        <li>
+        El número dado se debe obtener vía GET.
+        </li>
+    </ul>
+    <h3> Ejercicio Usando while</h3>
+    <?php
+        require_once __DIR__ . '/src/funciones.php';
+        if(isset($_GET['numero']))
+        {
+        primer_numero($_GET['numero']);
+        }
+    ?>
+    <h3>Ejercicio Usando do-while</h3>
+    <?php
+        require_once __DIR__ . '/src/funciones.php';
+        if(isset($_GET['numero']))
+        {
+        primer_numero_do_while($_GET['numero']);
+        }
+    ?>
+
+
+
         
 </body>
 </html>
