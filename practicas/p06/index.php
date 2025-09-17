@@ -84,6 +84,19 @@
         abecedario();
     ?>
 
+    <h2>Ejercicio 5</h2>
+    <form action="src/xhtml.php" method="post">
+        <label for="edad">Edad:</label>
+        <input type="number" name="edad" id="edad" required><br><br>
+
+        <label>Sexo:</label>
+        <input type="radio" name="sexo" value="femenino" required> Femenino
+        <input type="radio" name="sexo" value="masculino" required> Masculino <br><br>
+
+        <input type="submit">
+    </form>
+    <br>
+
 
 
 
