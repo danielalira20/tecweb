@@ -97,9 +97,44 @@
     </form>
     <br>
 
+    <h2>Ejercicio 6</h2>
+    <h2>Consultar Información de Autos</h2>
+    <form method="post">
+        <label for="matricula">Buscar auto por matrícula:</label>
+        <input type="text" name="matricula" id="matricula">
+        <button type="submit">Buscar</button>
+        <br><br>
+        <button type="submit" name="mostrar_todos">Todos los Autos</button>
+    </form>
 
+    <hr>
 
+    <?php
+    require_once 'src/funciones.php';
 
+    $resultado = null;
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST['matricula']) && !empty($_POST['matricula'])) {
+            $matricula = $_POST['matricula'];
+            $resultado = buscarPorMatricula($matricula);
+        } elseif (isset($_POST['mostrar_todos'])) {
+            $resultado = obtenerTodosLosAutos();
+            echo "<h3>Lista de Autos Registrados</h3>";
+            echo "<pre>";
+            print_r($resultado);
+            echo "</pre>";
+        }
+    }
+
+    if ($resultado && !isset($_POST['mostrar_todos'])) {
+        echo "<h3>Información del Auto</h3>";
+        echo "<pre>";
+        print_r($resultado);
+        echo "</pre>";
+    } elseif (!$resultado && $_SERVER["REQUEST_METHOD"] == "POST") {
+        echo "<p>No se encontraron resultados referentes a esa matricula.</p>";
+    }
+    ?>
         
 </body>
 </html>

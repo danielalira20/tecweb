@@ -96,6 +96,80 @@ function abecedario()
     echo "</table>";
 }
 
+$vehiculos = [
+    "AXQ9021" => [
+        "Auto" => ["marca" => "TOYOTA", "modelo" => 2021, "tipo" => "camioneta"],
+        "Propietario" => ["nombre" => "Valeria Montoya", "ciudad" => "Durango", "direccion" => "Blvd. Guadiana 345"]
+    ],
+    "LMP7642" => [
+        "Auto" => ["marca" => "HONDA", "modelo" => 2019, "tipo" => "sedan"],
+        "Propietario" => ["nombre" => "Jorge Estrada", "ciudad" => "Aguascalientes", "direccion" => "Col. Las Américas 118"]
+    ],
+    "CRD5128" => [
+        "Auto" => ["marca" => "SEAT", "modelo" => 2018, "tipo" => "hatchback"],
+        "Propietario" => ["nombre" => "Elisa Contreras", "ciudad" => "Saltillo", "direccion" => "Av. Universidad 900"]
+    ],
+    "ZNB8473" => [
+        "Auto" => ["marca" => "JEEP", "modelo" => 2017, "tipo" => "camioneta"],
+        "Propietario" => ["nombre" => "Raúl Hernández", "ciudad" => "Hermosillo", "direccion" => "Blvd. Kino 2301"]
+    ],
+    "QTR2389" => [
+        "Auto" => ["marca" => "TESLA", "modelo" => 2022, "tipo" => "sedan"],
+        "Propietario" => ["nombre" => "Camila Vargas", "ciudad" => "La Paz", "direccion" => "Malecón Costero 500"]
+    ],
+    "YHK6590" => [
+        "Auto" => ["marca" => "NISSAN", "modelo" => 2016, "tipo" => "hatchback"],
+        "Propietario" => ["nombre" => "Mario Rivera", "ciudad" => "Colima", "direccion" => "Av. Felipe Sevilla 212"]
+    ],
+    "BRF7821" => [
+        "Auto" => ["marca" => "MAZDA", "modelo" => 2020, "tipo" => "sedan"],
+        "Propietario" => ["nombre" => "Rosa Morales", "ciudad" => "Tuxtla Gutiérrez", "direccion" => "5a Norte 432"]
+    ],
+    "KDW9345" => [
+        "Auto" => ["marca" => "FORD", "modelo" => 2019, "tipo" => "camioneta"],
+        "Propietario" => ["nombre" => "Diego López", "ciudad" => "Ensenada", "direccion" => "Zona Centro 145"]
+    ],
+    "PGX3142" => [
+        "Auto" => ["marca" => "VOLKSWAGEN", "modelo" => 2018, "tipo" => "hatchback"],
+        "Propietario" => ["nombre" => "Andrea Ramírez", "ciudad" => "Villahermosa", "direccion" => "Col. Tabasco 2000, 67"]
+    ],
+    "VRC5604" => [
+        "Auto" => ["marca" => "BMW", "modelo" => 2021, "tipo" => "sedan"],
+        "Propietario" => ["nombre" => "Hugo Paredes", "ciudad" => "Mazatlán", "direccion" => "Av. Del Mar 888"]
+    ],
+    "XNJ2458" => [
+        "Auto" => ["marca" => "AUDI", "modelo" => 2023, "tipo" => "sedan"],
+        "Propietario" => ["nombre" => "Isabella Romero", "ciudad" => "Culiacán", "direccion" => "Forjadores 678"]
+    ],
+    "MZS7810" => [
+        "Auto" => ["marca" => "MERCEDES-BENZ", "modelo" => 2019, "tipo" => "sedan"],
+        "Propietario" => ["nombre" => "Fernando Silva", "ciudad" => "Tepic", "direccion" => "Av. Insurgentes 451"]
+    ],
+    "DLF4372" => [
+        "Auto" => ["marca" => "FIAT", "modelo" => 2015, "tipo" => "hatchback"],
+        "Propietario" => ["nombre" => "Samantha Ortega", "ciudad" => "Irapuato", "direccion" => "Blvd. Díaz Ordaz 75"]
+    ],
+    "HQR9025" => [
+        "Auto" => ["marca" => "RENAULT", "modelo" => 2017, "tipo" => "sedan"],
+        "Propietario" => ["nombre" => "Ángel Domínguez", "ciudad" => "Los Mochis", "direccion" => "Av. Independencia 300"]
+    ],
+    "TPW6874" => [
+        "Auto" => ["marca" => "PEUGEOT", "modelo" => 2020, "tipo" => "hatchback"],
+        "Propietario" => ["nombre" => "Natalia García", "ciudad" => "San Cristóbal de las Casas", "direccion" => "Real de Guadalupe 120"]
+    ]
+];
+
+function buscarPorMatricula($matricula) {
+    global $vehiculos;
+    return $vehiculos[$matricula] ?? false;
+}
+
+function obtenerTodosLosAutos() {
+    global $vehiculos;
+    return $vehiculos;
+}
+
+
 
 
 
