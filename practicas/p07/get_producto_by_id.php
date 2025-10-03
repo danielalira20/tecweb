@@ -8,7 +8,7 @@
 	if (!empty($id))
 	{
 		/** SE CREA EL OBJETO DE CONEXION */
-		@$link = new mysqli('localhost', 'root', '12345678a', 'marketzone');	
+		@$link = new mysqli('localhost', 'root', 'santi2016', 'marketzone');	
 
 		/** comprobar la conexión */
 		if ($link->connect_errno) 
@@ -16,6 +16,9 @@
 			die('Falló la conexión: '.$link->connect_error.'<br/>');
 			    /** NOTA: con @ se suprime el Warning para gestionar el error por medio de código */
 		}
+
+		/** ESTABLECER CHARSET UTF-8 */
+		$link->set_charset("utf8");
 
 		/** Crear una tabla que no devuelve un conjunto de resultados */
 		if ( $result = $link->query("SELECT * FROM productos WHERE id = '{$id}'") ) 
@@ -61,8 +64,8 @@
 						<td><?= $row['modelo'] ?></td>
 						<td><?= $row['precio'] ?></td>
 						<td><?= $row['unidades'] ?></td>
-						<td><?= utf8_encode($row['detalles']) ?></td>
-						<td><img src=<?= $row['imagen'] ?> ></td>
+						<td><?= $row['detalles'] ?></td>
+						<td><img src="img/<?= $row['imagen'] ?>" alt="Producto" style="max-width: 200px;"></td>
 					</tr>
 				</tbody>
 			</table>
