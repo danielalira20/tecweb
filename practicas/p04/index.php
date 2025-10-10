@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Práctica 3</title>
+    <title>Práctica 4</title>
+    
 </head>
 <body>
     <h2>Ejercicio 1</h2>
@@ -122,29 +123,29 @@
      <h2>Ejercicio 6</h2>
    <p>Dar y comprobar el valor booleano de las variables $a, $b, $c, $d, $e y $f usando var_dump():</p>
 
-<?php
-    $a = "0";
-    $b = "TRUE";
-    $c = FALSE;
-    $d = ($a OR $b);
-    $e = ($a AND $c);
-    $f = ($a XOR $b);
+    <?php
+        $a = "0";
+        $b = "TRUE";
+        $c = FALSE;
+        $d = ($a OR $b);
+        $e = ($a AND $c);
+        $f = ($a XOR $b);
 
-    echo "<pre>";
-    echo "\$a = "; var_dump($a);
-    echo "\$b = "; var_dump($b);
-    echo "\$c = "; var_dump($c);
-    echo "\$d = "; var_dump($d);
-    echo "\$e = "; var_dump($e);
-    echo "\$f = "; var_dump($f);
-    echo "</pre>";
+        echo "<pre>";
+        echo "\$a = "; var_dump($a);
+        echo "\$b = "; var_dump($b);
+        echo "\$c = "; var_dump($c);
+        echo "\$d = "; var_dump($d);
+        echo "\$e = "; var_dump($e);
+        echo "\$f = "; var_dump($f);
+        echo "</pre>";
 
-    echo "<h4>Transformar el valor booleano de \$c y \$e en uno que se pueda mostrar con echo:</h4>";
-    echo "<p>c: " . ($c ? 'true' : 'false') . "</p>";
-    echo "<p>e: " . ($e ? 'true' : 'false') . "</p>";
+        echo "<h4>Transformar el valor booleano de \$c y \$e en uno que se pueda mostrar con echo:</h4>";
+        echo "<p>c: " . ($c ? 'true' : 'false') . "</p>";
+        echo "<p>e: " . ($e ? 'true' : 'false') . "</p>";
 
-    unset($a, $b, $c, $d, $e, $f);
-?>
+        unset($a, $b, $c, $d, $e, $f);
+    ?>
 
 <h2>Ejercicio 7</h2>
     <p>Usando la variable predefinida $_SERVER, determina lo siguiente:</p>
@@ -154,5 +155,11 @@
         <li>c. El idioma del navegador (cliente): <?php echo htmlspecialchars($_SERVER['HTTP_ACCEPT_LANGUAGE']); ?></li>
     </ul>
    
+<p>
+    <a href="https://validator.w3.org/check?uri=referer"><img
+      src="https://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1" height="31" width="88" /></a>
+  </p>
+  
+
 </body>
 </html>
