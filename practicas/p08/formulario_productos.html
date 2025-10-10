@@ -116,7 +116,7 @@
     <div class="container">
         <h1>Registro de Productos</h1>
         
-        <form id="formProductos" action="procesar_producto.php" method="POST" enctype="multipart/form-data">
+        <form action="http://localhost/tecweb/practicas/p08/set_producto_v2.php" method="POST" enctype="multipart/form-data">
             
             <div class="form-group">
                 <label for="nombre">Nombre del Producto <span class="required">*</span></label>
@@ -159,33 +159,5 @@
             
         </form>
     </div>
-
-    <script>
-        document.getElementById('formProductos').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const nombre = document.getElementById('nombre').value;
-            const marca = document.getElementById('marca').value;
-            const modelo = document.getElementById('modelo').value;
-            const precio = document.getElementById('precio').value;
-            const detalles = document.getElementById('detalles').value;
-            const unidades = document.getElementById('unidades').value;
-            const imagen = document.getElementById('imagen').files[0];
-            
-            if (!nombre || !marca || !modelo || !precio || !detalles || !unidades || !imagen) {
-                alert('Por favor, complete todos los campos obligatorios');
-                return;
-            }
-            
-            alert('Formulario validado correctamente!\n\nDatos:\n' +
-                  'Nombre: ' + nombre + '\n' +
-                  'Marca: ' + marca + '\n' +
-                  'Modelo: ' + modelo + '\n' +
-                  'Precio: $' + precio + '\n' +
-                  'Unidades: ' + unidades + '\n' +
-                  'Imagen: ' + imagen.name);
-            
-        });
-    </script>
 </body>
 </html>
