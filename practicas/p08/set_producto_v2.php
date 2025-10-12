@@ -74,8 +74,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mensaje_error = "Error: Ya existe un producto con el mismo nombre, marca y modelo en la base de datos.";
         } else {
  
-            $query_insertar = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen, eliminado) 
-                              VALUES ('$nombre', '$marca', '$modelo', $precio, '$detalles', $unidades, '$nombre_imagen', 0)";
+            // $query_insertar = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen, eliminado) 
+                             // VALUES ('$nombre', '$marca', '$modelo', $precio, '$detalles', $unidades, '$nombre_imagen', 0)";
+
+            $query_insertar = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen) 
+                  VALUES ('$nombre', '$marca', '$modelo', $precio, '$detalles', $unidades, '$nombre_imagen')";
             
             if (mysqli_query($conexion, $query_insertar)) {
                 $exito = true;
