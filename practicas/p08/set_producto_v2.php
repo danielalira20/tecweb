@@ -3,7 +3,7 @@
 // Configuración de la conexión a la base de datos
 $host = 'localhost';
 $usuario = 'root';
-$password = 'santi2016';  
+$password = 'daniela20';  
 $base_datos = 'marketzone';  
 
 

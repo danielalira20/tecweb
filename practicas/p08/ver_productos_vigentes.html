@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos Vigentes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .filtros {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .filtros input {
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 200px;
+        }
+        
+        .filtros button {
+            padding: 10px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .filtros button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .producto-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .producto-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .producto-imagen {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .producto-nombre {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .producto-info {
+            margin: 8px 0;
+            color: #666;
+        }
+        
+        .producto-info strong {
+            color: #667eea;
+        }
+        
+        .producto-precio {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            margin: 15px 0;
+        }
+        
+        .producto-detalles {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .badge-vigente {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            padding: 40px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .total-productos {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Productos Vigentes</h1>
+        
+        <div class="filtros">
+            <input type="number" id="topeInput" placeholder="Filtrar por unidades máximas" min="0">
+            <button onclick="cargarProductos()"> Buscar</button>
+            <button onclick="limpiarFiltro()"> Ver Todos</button>
+        </div>
+        
+        <div id="totalProductos" class="total-productos" style="display: none;"></div>
+        
+        <div id="contenedor" class="loading">Cargando productos...</div>
+    </div>
+
+    <script>
+   
+        async function cargarProductos() {
+            const contenedor = document.getElementById('contenedor');
+            const totalDiv = document.getElementById('totalProductos');
+            const tope = document.getElementById('topeInput').value;
+            
+            // Construir URL con o sin parámetro tope
+            let url = '/tecweb/practicas/p08/get_productos_vigentes.php';
+            if (tope && tope > 0) {
+                url += `?tope=${tope}`;
+            }
+            
+            contenedor.innerHTML = '<div class="loading">Cargando productos...</div>';
+            totalDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(url);
+                const productos = await response.json();
+                
+                if (productos.length === 0) {
+                    contenedor.innerHTML = '<div class="error">No se encontraron productos vigentes.</div>';
+                    return;
+                }
+                
+        
+                totalDiv.textContent = `Total de productos vigentes: ${productos.length}`;
+                totalDiv.style.display = 'block';
+                
+         
+                let html = '<div class="productos-grid">';
+                
+                productos.forEach(producto => {
+                    html += `
+                        <div class="producto-card">
+                            <div class="producto-imagen">
+                                ${producto.imagen ? `<img src="img/${producto.imagen}" alt="${producto.nombre}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` : 'Sin imagen'}
+                            </div>
+                            
+                            <div class="producto-nombre">${producto.nombre}</div>
+                            
+                            <div class="producto-info">
+                                <strong>ID:</strong> ${producto.id}
+                            </div>
+                            
+                            <div class="producto-info">
+                                <strong>Marca:</strong> ${producto.marca}
+                            </div>
+                            
+                            <div class="producto-info">
+                                <strong>Modelo:</strong> ${producto.modelo}
+                            </div>
+                            
+                            <div class="producto-precio">
+                                $${parseFloat(producto.precio).toFixed(2)}
+                            </div>
+                            
+                            <div class="producto-info">
+                                <strong>Unidades disponibles:</strong> ${producto.unidades}
+                            </div>
+                            
+                            <div class="producto-detalles">
+                                ${producto.detalles}
+                            </div>
+                            
+                            <span class="badge-vigente">✓ Vigente</span>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                contenedor.innerHTML = html;
+                
+            } catch (error) {
+                contenedor.innerHTML = '<div class="error">Error al cargar los productos: ' + error.message + '</div>';
+            }
+        }
+
+        function limpiarFiltro() {
+            document.getElementById('topeInput').value = '';
+            cargarProductos();
+        }
+        
+        
+        cargarProductos();
+    </script>
+</body>
+</html>
