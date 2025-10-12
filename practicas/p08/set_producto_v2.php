@@ -1,30 +1,30 @@
 <?php
+
 // Configuración de la conexión a la base de datos
 $host = 'localhost';
 $usuario = 'root';
-$password = 'daniela20';  
-$base_datos = 'marketzone'; 
+$password = 'santi2016';  
+$base_datos = 'marketzone';  
 
-// Crear conexión
+
 $conexion = mysqli_connect($host, $usuario, $password, $base_datos);
 
-// Verificar conexión
+
 if (!$conexion) {
     die('Error de conexión: ' . mysqli_connect_error());
 }
 
-// Configurar charset para evitar problemas con caracteres especiales
+
 mysqli_set_charset($conexion, "utf8");
 
-// Variables para el resultado
+
 $exito = false;
 $mensaje_error = "";
 $datos_insertados = array();
 
-// Verificar si el formulario fue enviado
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Recibir y limpiar datos del formulario
     $nombre = mysqli_real_escape_string($conexion, trim($_POST['nombre']));
     $marca = mysqli_real_escape_string($conexion, trim($_POST['marca']));
     $modelo = mysqli_real_escape_string($conexion, trim($_POST['modelo']));
@@ -32,28 +32,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $detalles = mysqli_real_escape_string($conexion, trim($_POST['detalles']));
     $unidades = intval($_POST['unidades']);
     
-    // Manejar la carga de la imagen
+    
     $nombre_imagen = "";
+    $error_imagen = "";
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-        $nombre_imagen = $_FILES['imagen']['name'];
+        $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+        $nombre_unico = time() . '_' . uniqid() . '.' . $extension;
         $ruta_temporal = $_FILES['imagen']['tmp_name'];
-        $ruta_destino = "src/" . $nombre_imagen;
+        $ruta_destino = "img/" . $nombre_unico;
         
-        // Crear directorio img si no existe
         if (!file_exists('img')) {
-            mkdir('img', 0777, true);
+            if (!mkdir('img', 0777, true)) {
+                $error_imagen = "No se pudo crear la carpeta img/";
+            }
         }
         
-        // Mover archivo a la carpeta de destino
-        move_uploaded_file($ruta_temporal, $ruta_destino);
+        if (empty($error_imagen) && move_uploaded_file($ruta_temporal, $ruta_destino)) {
+            $nombre_imagen = $nombre_unico;
+        } else {
+            $error_imagen = "Error al subir la imagen";
+        }
+    } else {
+        $error_imagen = "No se recibió ninguna imagen";
     }
     
-    // Validar que los campos no estén vacíos
+
     if (empty($nombre) || empty($marca) || empty($modelo)) {
         $mensaje_error = "Error: Todos los campos son obligatorios.";
     } else {
         
-        // VALIDACIÓN: Verificar si ya existe un producto con el mismo nombre, marca y modelo
+        
         $query_verificar = "SELECT id FROM productos 
                            WHERE nombre = '$nombre' 
                            AND marca = '$marca' 
@@ -62,12 +70,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $resultado_verificar = mysqli_query($conexion, $query_verificar);
         
         if (mysqli_num_rows($resultado_verificar) > 0) {
-            // Ya existe un producto con esos datos
+     
             $mensaje_error = "Error: Ya existe un producto con el mismo nombre, marca y modelo en la base de datos.";
         } else {
-            // No existe, proceder a insertar
-            $query_insertar = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen) 
-                              VALUES ('$nombre', '$marca', '$modelo', $precio, '$detalles', $unidades, '$nombre_imagen')";
+ 
+            $query_insertar = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen, eliminado) 
+                              VALUES ('$nombre', '$marca', '$modelo', $precio, '$detalles', $unidades, '$nombre_imagen', 0)";
             
             if (mysqli_query($conexion, $query_insertar)) {
                 $exito = true;
@@ -90,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mensaje_error = "Error: No se recibieron datos del formulario.";
 }
 
-// Cerrar conexión
+
 mysqli_close($conexion);
 ?>
 
@@ -213,7 +221,7 @@ mysqli_close($conexion);
                 <h1>¡Producto Registrado Exitosamente!</h1>
             </div>
             
-            <h2>📋 Resumen de Datos Insertados:</h2>
+            <h2> Resumen de Datos Insertados:</h2>
             
             <div class="dato">
                 <strong>ID:</strong> <?php echo $datos_insertados['id']; ?>
@@ -245,7 +253,7 @@ mysqli_close($conexion);
             
             <?php if (!empty($datos_insertados['imagen'])): ?>
                 <div class="imagen-preview">
-                    <h2>Imagen del Producto:</h2>
+                    <h2> Imagen del Producto:</h2>
                     <img src="img/<?php echo htmlspecialchars($datos_insertados['imagen']); ?>" 
                          alt="<?php echo htmlspecialchars($datos_insertados['nombre']); ?>">
                 </div>
