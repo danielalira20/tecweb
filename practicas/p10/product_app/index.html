@@ -11,9 +11,16 @@
       <a href="#">Product App</a>
       
         <ul></ul>
+        <!-- Búsqueda por ID -->
         <form>
           <input name="search" id="search" type="search" placeholder="ID">
-          <button type="submit" onclick="buscarID(event)">Buscar</button>
+          <button type="submit" onclick="buscarID(event)">Buscar por ID</button>
+        </form>
+        
+        <!-- Búsqueda versátil -->
+        <form style="margin-top: 10px;">
+          <input name="searchTerm" id="searchTerm" type="search" placeholder="Nombre, marca o detalles">
+          <button type="button" onclick="buscarProducto()">Buscar Productos</button>
         </form>
     </nav>
 
@@ -48,6 +55,11 @@
           </thead>
           <tbody id="productos"></tbody>
         </table>
+      </div>
+      
+      <div id="productInfo" style="margin-top: 20px; padding: 15px; border: 1px solid #ccc;">
+        <h3>Resultados de Búsqueda</h3>
+        <p>Los resultados aparecerán aquí...</p>
       </div>
     </div>
 

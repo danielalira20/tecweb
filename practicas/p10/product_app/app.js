@@ -120,3 +120,57 @@ function init() {
     var JsonString = JSON.stringify(baseJSON,null,2);
     document.getElementById("description").value = JsonString;
 }
+
+function buscarProducto() {
+    const searchTerm = document.getElementById('searchTerm').value;
+    
+    if (searchTerm.trim() === '') {
+        alert('Por favor, ingresa un término de búsqueda');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('search', searchTerm);
+    
+    fetch('backend/read.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data); // Para debugging
+        
+        const productInfo = document.getElementById('productInfo');
+        productInfo.innerHTML = '';
+        
+        // Verificar si data es un array y si tiene elementos
+        if (!Array.isArray(data) || data.length === 0) {
+            productInfo.innerHTML = '<p>No se encontraron productos que coincidan con: "' + searchTerm + '"</p>';
+            return;
+        }
+        
+        let html = '<h3>Productos encontrados: ' + data.length + '</h3>';
+        
+        data.forEach(producto => {
+            // Asegurarse de que todos los campos existan
+            html += `
+                <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                    <h4>${producto.nombre || 'Sin nombre'}</h4>
+                    <p><strong>ID:</strong> ${producto.id || 'N/A'}</p>
+                    <p><strong>Marca:</strong> ${producto.marca || 'N/A'}</p>
+                    <p><strong>Modelo:</strong> ${producto.modelo || 'N/A'}</p>
+                    <p><strong>Precio:</strong> $${producto.precio || '0'}</p>
+                    <p><strong>Unidades:</strong> ${producto.unidades || '0'}</p>
+                    <p><strong>Detalles:</strong> ${producto.detalles || 'N/A'}</p>
+                    <p><strong>Imagen:</strong> ${producto.imagen || 'N/A'}</p>
+                </div>
+            `;
+        });
+        
+        productInfo.innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('productInfo').innerHTML = '<p>Error al realizar la búsqueda: ' + error.message + '</p>';
+    });
+}
