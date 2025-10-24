@@ -113,3 +113,78 @@ function buscarProducto(search) {
         }
     });
 }
+
+// Agregar producto
+$(document).on('submit', '#product-form', function(e) {
+    e.preventDefault();
+    
+    // SE OBTIENE DESDE EL FORMULARIO EL JSON A ENVIAR
+    let productoJsonString = $('#description').val();
+    // SE CONVIERTE EL JSON DE STRING A OBJETO
+    let finalJSON = JSON.parse(productoJsonString);
+    // SE AGREGA AL JSON EL NOMBRE DEL PRODUCTO
+    finalJSON['nombre'] = $('#name').val();
+    // SE OBTIENE EL STRING DEL JSON FINAL
+    productoJsonString = JSON.stringify(finalJSON, null, 2);
+    
+    $.ajax({
+        url: './backend/product-add.php',
+        type: 'POST',
+        contentType: 'application/json',
+        data: productoJsonString,
+        success: function(response) {
+            console.log(response);
+            let respuesta = JSON.parse(response);
+            
+            // SE CREA UNA PLANTILLA PARA CREAR INFORMACIÓN DE LA BARRA DE ESTADO
+            let template_bar = `
+                <li style="list-style: none;">status: ${respuesta.status}</li>
+                <li style="list-style: none;">message: ${respuesta.message}</li>
+            `;
+            
+            // SE HACE VISIBLE LA BARRA DE ESTADO
+            $('#product-result').removeClass('d-none').addClass('d-block');
+            // SE INSERTA LA PLANTILLA PARA LA BARRA DE ESTADO
+            $('#container').html(template_bar);
+            
+            // SE LISTAN TODOS LOS PRODUCTOS
+            listarProductos();
+            
+            // Limpiar formulario
+            $('#name').val('');
+            init();
+        }
+    });
+});
+
+// Eliminar producto
+$(document).on('click', '.product-delete', function() {
+    if(confirm('¿De verdad deseas eliminar el Producto?')) {
+        let element = $(this)[0].parentElement.parentElement;
+        let id = $(element).attr('productId');
+        
+        $.ajax({
+            url: './backend/product-delete.php',
+            type: 'GET',
+            data: { id: id },
+            success: function(response) {
+                console.log(response);
+                let respuesta = JSON.parse(response);
+                
+                // SE CREA UNA PLANTILLA PARA CREAR INFORMACIÓN DE LA BARRA DE ESTADO
+                let template_bar = `
+                    <li style="list-style: none;">status: ${respuesta.status}</li>
+                    <li style="list-style: none;">message: ${respuesta.message}</li>
+                `;
+                
+                // SE HACE VISIBLE LA BARRA DE ESTADO
+                $('#product-result').removeClass('d-none').addClass('d-block');
+                // SE INSERTA LA PLANTILLA PARA LA BARRA DE ESTADO
+                $('#container').html(template_bar);
+                
+                // SE LISTAN TODOS LOS PRODUCTOS
+                listarProductos();
+            }
+        });
+    }
+});
