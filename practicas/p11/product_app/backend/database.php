@@ -12,4 +12,7 @@
     if(!$conexion) {
         die('¡Base de datos NO conextada!');
     }
+
+    // Establecer charset UTF-8
+    mysqli_set_charset($conexion, "utf8");
 ?>

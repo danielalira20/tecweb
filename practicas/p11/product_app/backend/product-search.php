@@ -13,10 +13,10 @@
 			$rows = $result->fetch_all(MYSQLI_ASSOC);
 
             if(!is_null($rows)) {
-                // SE CODIFICAN A UTF-8 LOS DATOS Y SE MAPEAN AL ARREGLO DE RESPUESTA
+                // SE MAPEAN LOS DATOS AL ARREGLO DE RESPUESTA
                 foreach($rows as $num => $row) {
                     foreach($row as $key => $value) {
-                        $data[$num][$key] = utf8_encode($value);
+                        $data[$num][$key] = $value;
                     }
                 }
             }
