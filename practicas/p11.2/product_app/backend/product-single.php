@@ -4,23 +4,37 @@
     // SE CREA EL ARREGLO QUE SE VA A DEVOLVER EN FORMA DE JSON
     $data = array();
 
-    if( isset($_POST['id']) ) {
-        $id = $_POST['id'];
-        // SE REALIZA LA QUERY DE BÚSQUEDA Y AL MISMO TIEMPO SE VALIDA SI HUBO RESULTADOS
-        if ( $result = $conexion->query("SELECT * FROM productos WHERE id = {$id}") ) {
-            // SE OBTIENEN LOS RESULTADOS
+    if(isset($_POST['id'])) {
+        $id = intval($_POST['id']);
+        
+        // VALIDAR QUE EL ID SEA VÁLIDO
+        if ($id <= 0) {
+            $data['error'] = "ID de producto inválido";
+            echo json_encode($data, JSON_PRETTY_PRINT);
+            exit;
+        }
+
+        // SE REALIZA LA QUERY DE BÚSQUEDA CON PREPARED STATEMENT
+        $sql = "SELECT * FROM productos WHERE id = ? AND eliminado = 0";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("i", $id);
+        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
             $row = $result->fetch_assoc();
 
             if(!is_null($row)) {
-                // SE CODIFICAN A UTF-8 LOS DATOS Y SE MAPEAN AL ARREGLO DE RESPUESTA
+                // SE MAPEAN AL ARREGLO DE RESPUESTA
                 foreach($row as $key => $value) {
-                    $data[$key] = ($value);
+                    $data[$key] = $value;
                 }
             }
             $result->free();
         } else {
-            die('Query Error: '.mysqli_error($conexion));
+            die('Query Error: '.$stmt->error);
         }
+        
+        $stmt->close();
         $conexion->close();
     }
 
