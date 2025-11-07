@@ -4,25 +4,115 @@
     // SE CREA EL ARREGLO QUE SE VA A DEVOLVER EN FORMA DE JSON
     $data = array(
         'status'  => 'error',
-        'message' => 'La consulta falló'
+        'message' => 'Datos incompletos o inválidos'
     );
-    // SE VERIFICA HABER RECIBIDO EL ID
-    if( isset($_POST['id']) ) {
-        $jsonOBJ = json_decode( json_encode($_POST) );
-        // SE REALIZA LA QUERY DE BÚSQUEDA Y AL MISMO TIEMPO SE VALIDA SI HUBO RESULTADOS
-        $sql =  "UPDATE productos SET nombre='{$jsonOBJ->nombre}', marca='{$jsonOBJ->marca}',";
-        $sql .= "modelo='{$jsonOBJ->modelo}', precio={$jsonOBJ->precio}, detalles='{$jsonOBJ->detalles}',"; 
-        $sql .= "unidades={$jsonOBJ->unidades}, imagen='{$jsonOBJ->imagen}' WHERE id={$jsonOBJ->id}";
-        $conexion->set_charset("utf8");
-        if ( $conexion->query($sql) ) {
-            $data['status'] =  "success";
-            $data['message'] =  "Producto actualizado";
-		} else {
-            $data['message'] = "ERROR: No se ejecuto $sql. " . mysqli_error($conexion);
+
+    if(isset($_POST['id']) && isset($_POST['nombre'])) {
+        // SE OBTIENEN Y SANITIZAN LOS DATOS
+        $id = intval($_POST['id']);
+        $nombre = trim($_POST['nombre']);
+        $marca = isset($_POST['marca']) ? trim($_POST['marca']) : '';
+        $modelo = isset($_POST['modelo']) ? trim($_POST['modelo']) : '';
+        $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
+        $unidades = isset($_POST['unidades']) ? intval($_POST['unidades']) : 0;
+        $detalles = isset($_POST['detalles']) ? trim($_POST['detalles']) : 'NA';
+        $imagen = isset($_POST['imagen']) ? trim($_POST['imagen']) : 'img/default.png';
+
+        // VALIDACIONES DEL LADO DEL SERVIDOR
+        $errores = array();
+
+        // Validar ID
+        if ($id <= 0) {
+            $errores[] = "ID de producto inválido";
         }
-		$conexion->close();
-    } 
-    
+
+        // Validar nombre
+        if (empty($nombre)) {
+            $errores[] = "El nombre del producto es obligatorio";
+        } elseif (strlen($nombre) > 100) {
+            $errores[] = "El nombre no puede exceder 100 caracteres";
+        }
+
+        // Validar marca
+        if (empty($marca)) {
+            $errores[] = "La marca es obligatoria";
+        } elseif (strlen($marca) > 50) {
+            $errores[] = "La marca no puede exceder 50 caracteres";
+        }
+
+        // Validar modelo
+        if (empty($modelo)) {
+            $errores[] = "El modelo es obligatorio";
+        } elseif (strlen($modelo) > 25) {
+            $errores[] = "El modelo no puede exceder 25 caracteres";
+        } elseif (!preg_match('/^[a-zA-Z0-9\-]+$/', $modelo)) {
+            $errores[] = "El modelo solo puede contener letras, números y guiones";
+        }
+
+        // Validar precio
+        if ($precio <= 0) {
+            $errores[] = "El precio debe ser mayor a 0";
+        } elseif ($precio > 99999999.99) {
+            $errores[] = "El precio excede el límite permitido";
+        }
+
+        // Validar unidades
+        if ($unidades < 0) {
+            $errores[] = "Las unidades no pueden ser negativas";
+        }
+
+        // Validar detalles
+        if (strlen($detalles) > 250) {
+            $errores[] = "Los detalles no pueden exceder 250 caracteres";
+        }
+
+        // Si hay errores, retornarlos
+        if (!empty($errores)) {
+            $data['message'] = implode('. ', $errores);
+            echo json_encode($data, JSON_PRETTY_PRINT);
+            exit;
+        }
+
+        // VERIFICAR SI EL NOMBRE YA EXISTE (en otro producto)
+        $sql = "SELECT * FROM productos WHERE nombre = ? AND id != ? AND eliminado = 0";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("si", $nombre, $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $data['message'] = "Ya existe otro producto con ese nombre";
+            $stmt->close();
+            $conexion->close();
+            echo json_encode($data, JSON_PRETTY_PRINT);
+            exit;
+        }
+        $stmt->close();
+
+        // ACTUALIZAR EL PRODUCTO
+        $conexion->set_charset("utf8");
+        $sql = "UPDATE productos SET nombre=?, marca=?, modelo=?, precio=?, detalles=?, unidades=?, imagen=? 
+                WHERE id=? AND eliminado=0";
+        
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("sssdisii", $nombre, $marca, $modelo, $precio, $detalles, $unidades, $imagen, $id);
+        
+        if($stmt->execute()){
+            if($stmt->affected_rows > 0) {
+                $data['status'] = "success";
+                $data['message'] = "Producto actualizado exitosamente";
+            } else {
+                $data['status'] = "info";
+                $data['message'] = "No se realizaron cambios";
+            }
+        } else {
+            $data['message'] = "ERROR: No se pudo actualizar el producto. " . $stmt->error;
+        }
+        
+        $stmt->close();
+        $conexion->close();
+    }
+
     // SE HACE LA CONVERSIÓN DE ARRAY A JSON
     echo json_encode($data, JSON_PRETTY_PRINT);
 ?>
