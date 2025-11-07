@@ -2,7 +2,7 @@
     $conexion = @mysqli_connect(
         'localhost',
         'root',
-        '12345678a',
+        'daniela20',
         'marketzone'
     );
 
@@ -11,5 +11,6 @@
      **/
     if(!$conexion) {
         die('¡Base de datos NO conextada!');
+        
     }
 ?>
