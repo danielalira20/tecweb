@@ -13,4 +13,5 @@
         die('¡Base de datos NO conextada!');
         
     }
+    $conexion->set_charset("utf8");
 ?>
