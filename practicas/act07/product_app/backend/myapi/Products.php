@@ -5,26 +5,26 @@ use TECWEB\MYAPI\DataBase as DataBase;
 require_once __DIR__ . '/DataBase.php';
 
 class Products extends DataBase {
-    private $data = NULL;
+    private $response = NULL;
     
-    public function __construct($db, $user='root', $pass='12345678a') {
-        $this->data = array();
+    public function __construct($db, $user='root', $pass='daniela20') {
+        $this->response = array();
         parent::__construct($user, $pass, $db);
     }
 
     
     public function list(){
-        $this->data = array();
-        if ($result = $this->conexion->query("SELECT * FROM productos WHERE eliminado = 0")) {
-            $rows = $result->fetch_all(MYSQLI_ASSOC);
-            if(!is_null($rows)) {
-                foreach($rows as $num => $row) {
-                    foreach($row as $key => $value) {
-                        $this->data[$num][$key] = $value;
+        $this->response = array();
+        if ($consulta = $this->conexion->query("SELECT * FROM productos WHERE eliminado = 0")) {
+            $filas = $consulta->fetch_all(MYSQLI_ASSOC);
+            if(!is_null($filas)) {
+                foreach($filas as $indice => $fila) {
+                    foreach($fila as $campo => $valor) {
+                        $this->response[$indice][$campo] = $valor;
                     }
                 }
             }
-            $result->free();
+            $consulta->free();
         } else {
             die('Query Error: '.mysqli_error($this->conexion));
         }
@@ -33,21 +33,21 @@ class Products extends DataBase {
 
     
     public function search($search){
-        $this->data = array();
+        $this->response = array();
         $search = $this->conexion->real_escape_string($search);
         
-        $sql = "SELECT * FROM productos WHERE (id = '{$search}' OR nombre LIKE '%{$search}%' OR marca LIKE '%{$search}%' OR detalles LIKE '%{$search}%') AND eliminado = 0";
+        $query = "SELECT * FROM productos WHERE (id = '{$search}' OR nombre LIKE '%{$search}%' OR marca LIKE '%{$search}%' OR detalles LIKE '%{$search}%') AND eliminado = 0";
         
-        if ($result = $this->conexion->query($sql)) {
-            $rows = $result->fetch_all(MYSQLI_ASSOC);
-            if(!is_null($rows)) {
-                foreach($rows as $num => $row) {
-                    foreach($row as $key => $value) {
-                        $this->data[$num][$key] = $value;
+        if ($consulta = $this->conexion->query($query)) {
+            $filas = $consulta->fetch_all(MYSQLI_ASSOC);
+            if(!is_null($filas)) {
+                foreach($filas as $indice => $fila) {
+                    foreach($fila as $campo => $valor) {
+                        $this->response[$indice][$campo] = $valor;
                     }
                 }
             }
-            $result->free();
+            $consulta->free();
         } else {
             die('Query Error: '.mysqli_error($this->conexion));
         }
@@ -56,17 +56,17 @@ class Products extends DataBase {
 
   
     public function single($id){
-        $this->data = array();
+        $this->response = array();
         $id = $this->conexion->real_escape_string($id);
         
-        if ($result = $this->conexion->query("SELECT * FROM productos WHERE id = {$id}")) {
-            $row = $result->fetch_assoc();
-            if(!is_null($row)) {
-                foreach($row as $key => $value) {
-                    $this->data[$key] = $value;
+        if ($consulta = $this->conexion->query("SELECT * FROM productos WHERE id = {$id}")) {
+            $fila = $consulta->fetch_assoc();
+            if(!is_null($fila)) {
+                foreach($fila as $campo => $valor) {
+                    $this->response[$campo] = $valor;
                 }
             }
-            $result->free();
+            $consulta->free();
         } else {
             die('Query Error: '.mysqli_error($this->conexion));
         }
@@ -75,16 +75,16 @@ class Products extends DataBase {
 
 
     public function singleByName($nombre){
-        $this->data = array();
+        $this->response = array();
         $nombre = $this->conexion->real_escape_string($nombre);
         
-        if ($result = $this->conexion->query("SELECT * FROM productos WHERE nombre = '{$nombre}' AND eliminado = 0")) {
-            if($result->num_rows > 0) {
-                $this->data = array('existe' => true);
+        if ($consulta = $this->conexion->query("SELECT * FROM productos WHERE nombre = '{$nombre}' AND eliminado = 0")) {
+            if($consulta->num_rows > 0) {
+                $this->response = array('existe' => true);
             } else {
-                $this->data = array('existe' => false);
+                $this->response = array('existe' => false);
             }
-            $result->free();
+            $consulta->free();
         } else {
             die('Query Error: '.mysqli_error($this->conexion));
         }
@@ -93,73 +93,73 @@ class Products extends DataBase {
 
     
    // Agregar producto
-public function add($jsonOBJ){
-    $this->data = array();
+public function add($productData){
+    $this->response = array();
     
     // Si viene como string JSON, decodificar
-    if(is_string($jsonOBJ)) {
-        $jsonOBJ = json_decode($jsonOBJ, true);
+    if(is_string($productData)) {
+        $productData = json_decode($productData, true);
     }
     // Si no, asumir que ya es un array (viene de $_POST)
     
     // Validar que el nombre no exista
-    $nombre = $this->conexion->real_escape_string($jsonOBJ['nombre']);
-    $result = $this->conexion->query("SELECT * FROM productos WHERE nombre = '{$nombre}' AND eliminado = 0");
+    $nombreProducto = $this->conexion->real_escape_string($productData['nombre']);
+    $verificacion = $this->conexion->query("SELECT * FROM productos WHERE nombre = '{$nombreProducto}' AND eliminado = 0");
     
-    if($result->num_rows == 0) {
-        $sql = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen) 
+    if($verificacion->num_rows == 0) {
+        $queryInsert = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen) 
                 VALUES (
-                    '{$this->conexion->real_escape_string($jsonOBJ['nombre'])}',
-                    '{$this->conexion->real_escape_string($jsonOBJ['marca'])}',
-                    '{$this->conexion->real_escape_string($jsonOBJ['modelo'])}',
-                    {$jsonOBJ['precio']},
-                    '{$this->conexion->real_escape_string($jsonOBJ['detalles'])}',
-                    {$jsonOBJ['unidades']},
-                    '{$this->conexion->real_escape_string($jsonOBJ['imagen'])}'
+                    '{$this->conexion->real_escape_string($productData['nombre'])}',
+                    '{$this->conexion->real_escape_string($productData['marca'])}',
+                    '{$this->conexion->real_escape_string($productData['modelo'])}',
+                    {$productData['precio']},
+                    '{$this->conexion->real_escape_string($productData['detalles'])}',
+                    {$productData['unidades']},
+                    '{$this->conexion->real_escape_string($productData['imagen'])}'
                 )";
         
-        if($this->conexion->query($sql)){
-            $this->data['status'] = "success";
-            $this->data['message'] = "Producto agregado correctamente";
+        if($this->conexion->query($queryInsert)){
+            $this->response['status'] = "success";
+            $this->response['message'] = "Producto agregado correctamente";
         } else {
-            $this->data['status'] = "error";
-            $this->data['message'] = "ERROR: No se ejecutó $sql. " . mysqli_error($this->conexion);
+            $this->response['status'] = "error";
+            $this->response['message'] = "ERROR: No se ejecutó la consulta. " . mysqli_error($this->conexion);
         }
     } else {
-        $this->data['status'] = "error";
-        $this->data['message'] = "ERROR: El producto ya existe";
+        $this->response['status'] = "error";
+        $this->response['message'] = "ERROR: El producto ya existe";
     }
     
-    $result->free();
+    $verificacion->free();
     $this->conexion->close();
 }
 
   
     // Editar producto
-public function edit($jsonOBJ){
-    $this->data = array();
+public function edit($productData){
+    $this->response = array();
     
     // Si viene como string JSON, decodificar
-    if(is_string($jsonOBJ)) {
-        $jsonOBJ = json_decode($jsonOBJ, true);
+    if(is_string($productData)) {
+        $productData = json_decode($productData, true);
     }
     
-    $sql = "UPDATE productos SET 
-            nombre = '{$this->conexion->real_escape_string($jsonOBJ['nombre'])}',
-            marca = '{$this->conexion->real_escape_string($jsonOBJ['marca'])}',
-            modelo = '{$this->conexion->real_escape_string($jsonOBJ['modelo'])}',
-            precio = {$jsonOBJ['precio']},
-            detalles = '{$this->conexion->real_escape_string($jsonOBJ['detalles'])}',
-            unidades = {$jsonOBJ['unidades']},
-            imagen = '{$this->conexion->real_escape_string($jsonOBJ['imagen'])}'
-            WHERE id = {$jsonOBJ['id']}";
+    $queryUpdate = "UPDATE productos SET 
+            nombre = '{$this->conexion->real_escape_string($productData['nombre'])}',
+            marca = '{$this->conexion->real_escape_string($productData['marca'])}',
+            modelo = '{$this->conexion->real_escape_string($productData['modelo'])}',
+            precio = {$productData['precio']},
+            detalles = '{$this->conexion->real_escape_string($productData['detalles'])}',
+            unidades = {$productData['unidades']},
+            imagen = '{$this->conexion->real_escape_string($productData['imagen'])}'
+            WHERE id = {$productData['id']}";
     
-    if($this->conexion->query($sql)){
-        $this->data['status'] = "success";
-        $this->data['message'] = "Producto actualizado correctamente";
+    if($this->conexion->query($queryUpdate)){
+        $this->response['status'] = "success";
+        $this->response['message'] = "Producto actualizado correctamente";
     } else {
-        $this->data['status'] = "error";
-        $this->data['message'] = "ERROR: No se ejecutó $sql. " . mysqli_error($this->conexion);
+        $this->response['status'] = "error";
+        $this->response['message'] = "ERROR: No se pudo actualizar. " . mysqli_error($this->conexion);
     }
     
     $this->conexion->close();
@@ -167,25 +167,25 @@ public function edit($jsonOBJ){
 
    
     public function delete($id){
-        $this->data = array();
+        $this->response = array();
         $id = $this->conexion->real_escape_string($id);
         
-        $sql = "UPDATE productos SET eliminado = 1 WHERE id = {$id}";
+        $queryDelete = "UPDATE productos SET eliminado = 1 WHERE id = {$id}";
         
-        if($this->conexion->query($sql)){
-            $this->data['status'] = "success";
-            $this->data['message'] = "Producto eliminado correctamente";
+        if($this->conexion->query($queryDelete)){
+            $this->response['status'] = "success";
+            $this->response['message'] = "Producto eliminado correctamente";
         } else {
-            $this->data['status'] = "error";
-            $this->data['message'] = "ERROR: No se ejecutó $sql. " . mysqli_error($this->conexion);
+            $this->response['status'] = "error";
+            $this->response['message'] = "ERROR: No se pudo eliminar. " . mysqli_error($this->conexion);
         }
         
-        $this->conexion->close();
+    $this->conexion->close();
     }
 
     
     public function getData() {
-        return json_encode($this->data, JSON_PRETTY_PRINT);
+        return json_encode($this->response, JSON_PRETTY_PRINT);
     }
 }
 ?>

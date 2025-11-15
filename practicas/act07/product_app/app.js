@@ -1,5 +1,5 @@
-// JSON BASE A MOSTRAR EN FORMULARIO (Ya no se usa pero lo dejamos por compatibilidad)
-var baseJSON = {
+// Configuración inicial del producto por defecto
+var productoBase = {
     "precio": 0.0,
     "unidades": 1,
     "modelo": "XX-000",
@@ -8,8 +8,8 @@ var baseJSON = {
     "imagen": "img/default.png"
 };
 
-// OBJETO PARA GUARDAR ESTADO DE VALIDACIONES
-let validaciones = {
+// Estado de validación de campos del formulario
+let estadoValidacion = {
     nombre: false,
     marca: false,
     modelo: false,
@@ -19,16 +19,15 @@ let validaciones = {
     imagen: false
 };
 
-
-let nombreTimeout = null;
+let temporizadorNombre = null;
 
 $(document).ready(function(){
-    let edit = false;
+    let modoEdicion = false;
 
     $('#product-result').hide();
-    listarProductos();
+    cargarListaProductos();
     
-    
+    // Establecer valores predeterminados en el formulario
     $('#precio').val(99.99);
     $('#unidades').val(1);
     $('#modelo').val('XX-000');
@@ -36,7 +35,7 @@ $(document).ready(function(){
     $('#detalles').val('NA');
     $('#imagen').val('img/default.png');
 
-    function listarProductos() {
+    function cargarListaProductos() {
         $.ajax({
             url: './backend/product-list.php',
             type: 'GET',
@@ -44,21 +43,21 @@ $(document).ready(function(){
                 const productos = JSON.parse(response);
             
                 if(Object.keys(productos).length > 0) {
-                    let template = '';
+                    let htmlTemplate = '';
 
                     productos.forEach(producto => {
-                        let descripcion = '';
-                        descripcion += '<li>precio: '+producto.precio+'</li>';
-                        descripcion += '<li>unidades: '+producto.unidades+'</li>';
-                        descripcion += '<li>modelo: '+producto.modelo+'</li>';
-                        descripcion += '<li>marca: '+producto.marca+'</li>';
-                        descripcion += '<li>detalles: '+producto.detalles+'</li>';
+                        let infoProducto = '';
+                        infoProducto += '<li>precio: '+producto.precio+'</li>';
+                        infoProducto += '<li>unidades: '+producto.unidades+'</li>';
+                        infoProducto += '<li>modelo: '+producto.modelo+'</li>';
+                        infoProducto += '<li>marca: '+producto.marca+'</li>';
+                        infoProducto += '<li>detalles: '+producto.detalles+'</li>';
                     
-                        template += `
+                        htmlTemplate += `
                             <tr productId="${producto.id}">
                                 <td>${producto.id}</td>
                                 <td><a href="#" class="product-item">${producto.nombre}</a></td>
-                                <td><ul>${descripcion}</ul></td>
+                                <td><ul>${infoProducto}</ul></td>
                                 <td>
                                     <button class="product-delete btn btn-danger" onclick="eliminarProducto()">
                                         Eliminar
@@ -67,240 +66,240 @@ $(document).ready(function(){
                             </tr>
                         `;
                     });
-                    $('#products').html(template);
+                    $('#products').html(htmlTemplate);
                 }
             }
         });
     }
 
-    
+    // Validación en tiempo real del nombre
     $('#name').on('input', function() {
-        clearTimeout(nombreTimeout);
-        let nombre = $(this).val().trim();
+        clearTimeout(temporizadorNombre);
+        let nombreProducto = $(this).val().trim();
         
-        if(nombre.length > 0) {
-            
-            nombreTimeout = setTimeout(function() {
+        if(nombreProducto.length > 0) {
+            temporizadorNombre = setTimeout(function() {
                 $.ajax({
                     url: './backend/product-validate-name.php',
                     type: 'POST',
-                    data: { nombre: nombre },
+                    data: { nombre: nombreProducto },
                     success: function(response) {
                         let resultado = JSON.parse(response);
-                        if(resultado.existe && !edit) {
-                            mostrarEstadoCampo('name', false, '❌ Este nombre ya existe en la base de datos');
-                            validaciones.nombre = false;
+                        if(resultado.existe && !modoEdicion) {
+                            actualizarEstadoCampo('name', false, 'ERROR: Este nombre ya está registrado');
+                            estadoValidacion.nombre = false;
                         } else {
-                            mostrarEstadoCampo('name', true, '✓ Nombre disponible');
-                            validaciones.nombre = true;
+                            actualizarEstadoCampo('name', true, 'OK: Nombre disponible');
+                            estadoValidacion.nombre = true;
                         }
-                        actualizarBarraEstado();
+                        mostrarResumenValidacion();
                     }
                 });
             }, 500);
         } else {
-            mostrarEstadoCampo('name', false, '❌ El nombre es requerido');
-            validaciones.nombre = false;
-            actualizarBarraEstado();
+            actualizarEstadoCampo('name', false, 'ERROR: El nombre es obligatorio');
+            estadoValidacion.nombre = false;
+            mostrarResumenValidacion();
         }
     });
 
-    
+    // Eventos de pérdida de foco para validaciones
     $('#name').blur(function() {
-        validarNombre();
+        verificarNombre();
     });
 
     $('#marca').blur(function() {
-        validarMarca();
+        verificarMarca();
     });
 
     $('#modelo').blur(function() {
-        validarModelo();
+        verificarModelo();
     });
 
     $('#precio').blur(function() {
-        validarPrecio();
+        verificarPrecio();
     });
 
     $('#unidades').blur(function() {
-        validarUnidades();
+        verificarUnidades();
     });
 
     $('#detalles').blur(function() {
-        validarDetalles();
+        verificarDetalles();
     });
 
     $('#imagen').blur(function() {
-        validarImagen();
+        verificarImagen();
     });
 
-    
-    function validarNombre() {
+    // Funciones de validación
+    function verificarNombre() {
         let nombre = $('#name').val().trim();
         if(nombre === '') {
-            mostrarEstadoCampo('name', false, '❌ El nombre es requerido');
-            validaciones.nombre = false;
+            actualizarEstadoCampo('name', false, 'ERROR: El nombre es obligatorio');
+            estadoValidacion.nombre = false;
             return false;
         } else if(nombre.length > 100) {
-            mostrarEstadoCampo('name', false, '❌ El nombre no puede exceder 100 caracteres');
-            validaciones.nombre = false;
+            actualizarEstadoCampo('name', false, 'ERROR: Máximo 100 caracteres');
+            estadoValidacion.nombre = false;
             return false;
         } else {
-            mostrarEstadoCampo('name', true, '✓ Nombre válido');
-            validaciones.nombre = true;
+            actualizarEstadoCampo('name', true, 'OK: Nombre correcto');
+            estadoValidacion.nombre = true;
             return true;
         }
     }
 
-    function validarMarca() {
+    function verificarMarca() {
         let marca = $('#marca').val().trim();
         if(marca === '') {
-            mostrarEstadoCampo('marca', false, '❌ La marca es requerida');
-            validaciones.marca = false;
+            actualizarEstadoCampo('marca', false, 'ERROR: La marca es obligatoria');
+            estadoValidacion.marca = false;
             return false;
         } else if(marca.length > 50) {
-            mostrarEstadoCampo('marca', false, '❌ La marca no puede exceder 50 caracteres');
-            validaciones.marca = false;
+            actualizarEstadoCampo('marca', false, 'ERROR: Máximo 50 caracteres');
+            estadoValidacion.marca = false;
             return false;
         } else {
-            mostrarEstadoCampo('marca', true, '✓ Marca válida');
-            validaciones.marca = true;
+            actualizarEstadoCampo('marca', true, 'OK: Marca correcta');
+            estadoValidacion.marca = true;
             return true;
         }
     }
 
-    function validarModelo() {
+    function verificarModelo() {
         let modelo = $('#modelo').val().trim();
-        let regex = /^[a-zA-Z0-9\-]+$/;
+        let formatoValido = /^[a-zA-Z0-9\-]+$/;
         if(modelo === '') {
-            mostrarEstadoCampo('modelo', false, '❌ El modelo es requerido');
-            validaciones.modelo = false;
+            actualizarEstadoCampo('modelo', false, 'ERROR: El modelo es obligatorio');
+            estadoValidacion.modelo = false;
             return false;
-        } else if(!regex.test(modelo)) {
-            mostrarEstadoCampo('modelo', false, '❌ El modelo solo puede contener letras, números y guiones');
-            validaciones.modelo = false;
+        } else if(!formatoValido.test(modelo)) {
+            actualizarEstadoCampo('modelo', false, 'ERROR: Solo letras, números y guiones');
+            estadoValidacion.modelo = false;
             return false;
         } else if(modelo.length > 25) {
-            mostrarEstadoCampo('modelo', false, '❌ El modelo no puede exceder 25 caracteres');
-            validaciones.modelo = false;
+            actualizarEstadoCampo('modelo', false, 'ERROR: Máximo 25 caracteres');
+            estadoValidacion.modelo = false;
             return false;
         } else {
-            mostrarEstadoCampo('modelo', true, '✓ Modelo válido');
-            validaciones.modelo = true;
+            actualizarEstadoCampo('modelo', true, 'OK: Modelo correcto');
+            estadoValidacion.modelo = true;
             return true;
         }
     }
 
-    function validarPrecio() {
+    function verificarPrecio() {
         let precio = parseFloat($('#precio').val());
         if(isNaN(precio) || precio <= 0) {
-            mostrarEstadoCampo('precio', false, '❌ El precio debe ser mayor a 0');
-            validaciones.precio = false;
+            actualizarEstadoCampo('precio', false, 'ERROR: Precio debe ser mayor a 0');
+            estadoValidacion.precio = false;
             return false;
         } else if(precio > 99999999.99) {
-            mostrarEstadoCampo('precio', false, '❌ El precio es demasiado alto');
-            validaciones.precio = false;
+            actualizarEstadoCampo('precio', false, 'ERROR: Precio demasiado alto');
+            estadoValidacion.precio = false;
             return false;
         } else {
-            mostrarEstadoCampo('precio', true, '✓ Precio válido');
-            validaciones.precio = true;
+            actualizarEstadoCampo('precio', true, 'OK: Precio correcto');
+            estadoValidacion.precio = true;
             return true;
         }
     }
 
-    function validarUnidades() {
+    function verificarUnidades() {
         let unidades = parseInt($('#unidades').val());
         if(isNaN(unidades) || unidades < 0) {
-            mostrarEstadoCampo('unidades', false, '❌ Las unidades deben ser 0 o mayor');
-            validaciones.unidades = false;
+            actualizarEstadoCampo('unidades', false, 'ERROR: Mínimo 0 unidades');
+            estadoValidacion.unidades = false;
             return false;
         } else {
-            mostrarEstadoCampo('unidades', true, '✓ Unidades válidas');
-            validaciones.unidades = true;
+            actualizarEstadoCampo('unidades', true, 'OK: Unidades correctas');
+            estadoValidacion.unidades = true;
             return true;
         }
     }
 
-    function validarDetalles() {
+    function verificarDetalles() {
         let detalles = $('#detalles').val().trim();
         if(detalles === '') {
-            mostrarEstadoCampo('detalles', false, '❌ Los detalles son requeridos');
-            validaciones.detalles = false;
+            actualizarEstadoCampo('detalles', false, 'ERROR: Los detalles son obligatorios');
+            estadoValidacion.detalles = false;
             return false;
         } else if(detalles.length > 250) {
-            mostrarEstadoCampo('detalles', false, '❌ Los detalles no pueden exceder 250 caracteres');
-            validaciones.detalles = false;
+            actualizarEstadoCampo('detalles', false, 'ERROR: Máximo 250 caracteres');
+            estadoValidacion.detalles = false;
             return false;
         } else {
-            mostrarEstadoCampo('detalles', true, '✓ Detalles válidos');
-            validaciones.detalles = true;
+            actualizarEstadoCampo('detalles', true, 'OK: Detalles correctos');
+            estadoValidacion.detalles = true;
             return true;
         }
     }
 
-    function validarImagen() {
+    function verificarImagen() {
         let imagen = $('#imagen').val().trim();
         if(imagen === '') {
-            mostrarEstadoCampo('imagen', false, '❌ La ruta de imagen es requerida');
-            validaciones.imagen = false;
+            actualizarEstadoCampo('imagen', false, 'ERROR: Ruta de imagen obligatoria');
+            estadoValidacion.imagen = false;
             return false;
         } else {
-            mostrarEstadoCampo('imagen', true, '✓ Ruta de imagen válida');
-            validaciones.imagen = true;
+            actualizarEstadoCampo('imagen', true, 'OK: Ruta correcta');
+            estadoValidacion.imagen = true;
             return true;
         }
     }
 
-   
-    function mostrarEstadoCampo(campo, valido, mensaje) {
-        let statusElement = $(`#${campo}-status`);
-        if(valido) {
-            statusElement.removeClass('text-danger').addClass('text-success').text(mensaje);
+    // Actualizar mensaje de estado de un campo
+    function actualizarEstadoCampo(campo, esValido, mensaje) {
+        let elementoEstado = $(`#${campo}-status`);
+        if(esValido) {
+            elementoEstado.removeClass('text-danger').addClass('text-success').text(mensaje);
         } else {
-            statusElement.removeClass('text-success').addClass('text-danger').text(mensaje);
+            elementoEstado.removeClass('text-success').addClass('text-danger').text(mensaje);
         }
     }
 
-    function actualizarBarraEstado() {
-        let template = '<ul style="list-style: none; padding: 0;">';
-        for(let campo in validaciones) {
-            let icono = validaciones[campo] ? '✓' : '❌';
-            let clase = validaciones[campo] ? 'text-success' : 'text-danger';
-            template += `<li class="${clase}">${icono} ${campo.charAt(0).toUpperCase() + campo.slice(1)}</li>`;
+    function mostrarResumenValidacion() {
+        let htmlResumen = '<ul style="list-style: none; padding: 0;">';
+        for(let campo in estadoValidacion) {
+            let simbolo = estadoValidacion[campo] ? '[OK]' : '[X]';
+            let claseCSS = estadoValidacion[campo] ? 'text-success' : 'text-danger';
+            let nombreCampo = campo.charAt(0).toUpperCase() + campo.slice(1);
+            htmlResumen += `<li class="${claseCSS}">${simbolo} ${nombreCampo}</li>`;
         }
-        template += '</ul>';
-        $('#validation-summary').html(template);
+        htmlResumen += '</ul>';
+        $('#validation-summary').html(htmlResumen);
         $('#general-status').show();
     }
 
     $('#search').keyup(function() {
         if($('#search').val()) {
-            let search = $('#search').val();
+            let terminoBusqueda = $('#search').val();
             $.ajax({
                 url: './backend/product-search.php?search='+$('#search').val(),
-                data: {search},
+                data: {search: terminoBusqueda},
                 type: 'GET',
                 success: function (response) {
                     if(!response.error) {
                         const productos = JSON.parse(response);
                         
                         if(Object.keys(productos).length > 0) {
-                            let template = '';
-                            let template_bar = '';
+                            let htmlTabla = '';
+                            let htmlBarra = '';
 
                             productos.forEach(producto => {
-                                let descripcion = '';
-                                descripcion += '<li>precio: '+producto.precio+'</li>';
-                                descripcion += '<li>unidades: '+producto.unidades+'</li>';
-                                descripcion += '<li>modelo: '+producto.modelo+'</li>';
-                                descripcion += '<li>marca: '+producto.marca+'</li>';
-                                descripcion += '<li>detalles: '+producto.detalles+'</li>';
+                                let infoProducto = '';
+                                infoProducto += '<li>precio: '+producto.precio+'</li>';
+                                infoProducto += '<li>unidades: '+producto.unidades+'</li>';
+                                infoProducto += '<li>modelo: '+producto.modelo+'</li>';
+                                infoProducto += '<li>marca: '+producto.marca+'</li>';
+                                infoProducto += '<li>detalles: '+producto.detalles+'</li>';
                             
-                                template += `
+                                htmlTabla += `
                                     <tr productId="${producto.id}">
                                         <td>${producto.id}</td>
                                         <td><a href="#" class="product-item">${producto.nombre}</a></td>
-                                        <td><ul>${descripcion}</ul></td>
+                                        <td><ul>${infoProducto}</ul></td>
                                         <td>
                                             <button class="product-delete btn btn-danger">
                                                 Eliminar
@@ -309,13 +308,13 @@ $(document).ready(function(){
                                     </tr>
                                 `;
 
-                                template_bar += `
+                                htmlBarra += `
                                     <li>${producto.nombre}</il>
                                 `;
                             });
                             $('#product-result').show();
-                            $('#container').html(template_bar);
-                            $('#products').html(template);    
+                            $('#container').html(htmlBarra);
+                            $('#products').html(htmlTabla);    
                         }
                     }
                 }
@@ -326,28 +325,28 @@ $(document).ready(function(){
         }
     });
 
-   
+    // Manejo del envío del formulario
     $('#product-form').submit(e => {
         e.preventDefault();
 
-       
-        let nombreValido = validarNombre();
-        let marcaValida = validarMarca();
-        let modeloValido = validarModelo();
-        let precioValido = validarPrecio();
-        let unidadesValidas = validarUnidades();
-        let detallesValidos = validarDetalles();
-        let imagenValida = validarImagen();
+        // Ejecutar todas las validaciones
+        let nombreOK = verificarNombre();
+        let marcaOK = verificarMarca();
+        let modeloOK = verificarModelo();
+        let precioOK = verificarPrecio();
+        let unidadesOK = verificarUnidades();
+        let detallesOK = verificarDetalles();
+        let imagenOK = verificarImagen();
 
-        
-        if(!nombreValido || !marcaValida || !modeloValido || !precioValido || 
-           !unidadesValidas || !detallesValidos || !imagenValida) {
+        // Verificar si todas las validaciones pasaron
+        if(!nombreOK || !marcaOK || !modeloOK || !precioOK || 
+           !unidadesOK || !detallesOK || !imagenOK) {
             alert('Por favor, corrige los errores en el formulario antes de continuar.');
-            actualizarBarraEstado();
+            mostrarResumenValidacion();
             return;
         }
 
-        let postData = {
+        let datosProducto = {
             nombre: $('#name').val().trim(),
             marca: $('#marca').val().trim(),
             modelo: $('#modelo').val().trim(),
@@ -358,16 +357,17 @@ $(document).ready(function(){
             id: $('#productId').val()
         };
 
-        const url = edit === false ? './backend/product-add.php' : './backend/product-edit.php';
+        const urlBackend = modoEdicion === false ? './backend/product-add.php' : './backend/product-edit.php';
         
-        $.post(url, postData, (response) => {
+        $.post(urlBackend, datosProducto, (response) => {
             let respuesta = JSON.parse(response);
-            let template_bar = '';
-            template_bar += `
+            let htmlRespuesta = '';
+            htmlRespuesta += `
                         <li style="list-style: none;">status: ${respuesta.status}</li>
                         <li style="list-style: none;">message: ${respuesta.message}</li>
                     `;
             
+            // Limpiar formulario
             $('#name').val('');
             $('#marca').val('NA');
             $('#modelo').val('XX-000');
@@ -377,64 +377,64 @@ $(document).ready(function(){
             $('#imagen').val('img/default.png');
             $('#productId').val('');
             
-            
+            // Limpiar mensajes de validación
             $('.form-text').text('');
             
-            
-            for(let campo in validaciones) {
-                validaciones[campo] = false;
+            // Reiniciar estado de validaciones
+            for(let campo in estadoValidacion) {
+                estadoValidacion[campo] = false;
             }
             
             $('#product-result').show();
-            $('#container').html(template_bar);
-            listarProductos();
-            edit = false;
+            $('#container').html(htmlRespuesta);
+            cargarListaProductos();
+            modoEdicion = false;
             
-            
+            // Cambiar texto del botón
             $('button.btn-primary').text("Agregar Producto");
         });
     });
 
     $(document).on('click', '.product-delete', (e) => {
         if(confirm('¿Realmente deseas eliminar el producto?')) {
-            const element = $(this)[0].activeElement.parentElement.parentElement;
-            const id = $(element).attr('productId');
-            $.post('./backend/product-delete.php', {id}, (response) => {
+            const elemento = $(this)[0].activeElement.parentElement.parentElement;
+            const idProducto = $(elemento).attr('productId');
+            $.post('./backend/product-delete.php', {id: idProducto}, (response) => {
                 $('#product-result').hide();
-                listarProductos();
+                cargarListaProductos();
             });
         }
     });
 
     $(document).on('click', '.product-item', (e) => {
-        const element = $(this)[0].activeElement.parentElement.parentElement;
-        const id = $(element).attr('productId');
-        $.post('./backend/product-single.php', {id}, (response) => {
-            let product = JSON.parse(response);
+        const elemento = $(this)[0].activeElement.parentElement.parentElement;
+        const idProducto = $(elemento).attr('productId');
+        $.post('./backend/product-single.php', {id: idProducto}, (response) => {
+            let productoSeleccionado = JSON.parse(response);
             
-            // INSERTAR DATOS EN LOS CAMPOS
-            $('#name').val(product.nombre);
-            $('#marca').val(product.marca);
-            $('#modelo').val(product.modelo);
-            $('#precio').val(product.precio);
-            $('#unidades').val(product.unidades);
-            $('#detalles').val(product.detalles);
-            $('#imagen').val(product.imagen);
-            $('#productId').val(product.id);
+            // Cargar datos en el formulario
+            $('#name').val(productoSeleccionado.nombre);
+            $('#marca').val(productoSeleccionado.marca);
+            $('#modelo').val(productoSeleccionado.modelo);
+            $('#precio').val(productoSeleccionado.precio);
+            $('#unidades').val(productoSeleccionado.unidades);
+            $('#detalles').val(productoSeleccionado.detalles);
+            $('#imagen').val(productoSeleccionado.imagen);
+            $('#productId').val(productoSeleccionado.id);
             
-            // Validar todos los campos
-            validarNombre();
-            validarMarca();
-            validarModelo();
-            validarPrecio();
-            validarUnidades();
-            validarDetalles();
-            validarImagen();
-            actualizarBarraEstado();
+            // Validar todos los campos cargados
+            verificarNombre();
+            verificarMarca();
+            verificarModelo();
+            verificarPrecio();
+            verificarUnidades();
+            verificarDetalles();
+            verificarImagen();
+            mostrarResumenValidacion();
             
-            edit = true;
+            modoEdicion = true;
             
-
+            // Cambiar texto del botón
             $('button.btn-primary').text("Modificar Producto");
         });
         e.preventDefault();

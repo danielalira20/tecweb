@@ -12,7 +12,7 @@ abstract class DataBase {
         );
 
         if(!$this->conexion) {
-            die('¡Base de datos NO conectada!');
+            die('¡Base de datos no conectada!');
 
         }
     }

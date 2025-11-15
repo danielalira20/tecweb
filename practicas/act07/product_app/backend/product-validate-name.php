@@ -2,8 +2,12 @@
     use TECWEB\MYAPI\Products as Products;
     require_once __DIR__ . '/myapi/Products.php';
 
-    $prodObj = new Products('marketzone');
-    $prodObj->singleByName($_POST['nombre']);
+    $productos = new Products('marketzone');
+    
+    if(isset($_POST['nombre'])) {
+        $nombreProducto = $_POST['nombre'];
+        $productos->singleByName($nombreProducto);
+    }
 
-    echo $prodObj->getData();
+    echo $productos->getData();
 ?>

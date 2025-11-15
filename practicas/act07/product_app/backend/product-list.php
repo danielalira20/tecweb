@@ -1,9 +1,9 @@
 <?php
     use TECWEB\MYAPI\Products as Products;
-    require_once __DIR__  . '/myapi/Products.php';
+    require_once __DIR__ . '/myapi/Products.php';
 
-    $prodObj = new Products('marketzone');
-    $prodObj->list();
+    $productos = new Products('marketzone');
+    $productos->list();
 
-    echo $prodObj->getData();
+    echo $productos->getData();
 ?>
