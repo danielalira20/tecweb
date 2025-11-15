@@ -6,55 +6,61 @@ use App\DataBase;
 class Read extends DataBase {
     
     public function __construct($db = 'marketzone') {
-        parent::__construct('root', 'root', $db);
+        parent::__construct($db, 'root', 'daniela20');
     }
 
-    // Listar todos los productos
     public function list() {
-        $sql = "SELECT * FROM productos WHERE eliminado = 0";
-        $result = $this->conexion->query($sql);
+        if ($result = $this->conexion->query("SELECT * FROM productos WHERE eliminado = 0")) {
+            $rows = $result->fetch_all(MYSQLI_ASSOC);
 
-        if ($result && $result->num_rows > 0) {
-            $productos = array();
-            while ($row = $result->fetch_assoc()) {
-                $productos[] = $row;
+            if(!is_null($rows)) {
+                foreach($rows as $num => $row) {
+                    foreach($row as $key => $value) {
+                        $this->data[$num][$key] = $value;
+                    }
+                }
             }
-            $this->setData($productos);
+            $result->free();
         } else {
-            $this->setData(array());
+            die('Query Error: ' . mysqli_error($this->conexion));
         }
     }
 
-    // Buscar productos por término
-    public function search($searchTerm) {
-        $sql = "SELECT * FROM productos 
-                WHERE (nombre LIKE '%{$searchTerm}%' 
-                   OR marca LIKE '%{$searchTerm}%' 
-                   OR detalles LIKE '%{$searchTerm}%')
-                AND eliminado = 0";
-        
-        $result = $this->conexion->query($sql);
+    public function search($search) {
+        if(isset($search)) {
+            $sql = "SELECT * FROM productos WHERE (id = '{$search}' OR nombre LIKE '%{$search}%' OR marca LIKE '%{$search}%' OR detalles LIKE '%{$search}%') AND eliminado = 0";
+            
+            if ($result = $this->conexion->query($sql)) {
+                $rows = $result->fetch_all(MYSQLI_ASSOC);
 
-        if ($result && $result->num_rows > 0) {
-            $productos = array();
-            while ($row = $result->fetch_assoc()) {
-                $productos[] = $row;
+                if(!is_null($rows)) {
+                    foreach($rows as $num => $row) {
+                        foreach($row as $key => $value) {
+                            $this->data[$num][$key] = $value;
+                        }
+                    }
+                }
+                $result->free();
+            } else {
+                die('Query Error: ' . mysqli_error($this->conexion));
             }
-            $this->setData($productos);
-        } else {
-            $this->setData(array());
         }
     }
 
-    // Obtener un producto específico
     public function single($id) {
-        $sql = "SELECT * FROM productos WHERE id = {$id} AND eliminado = 0";
-        $result = $this->conexion->query($sql);
-
-        if ($result && $result->num_rows > 0) {
-            $this->setData($result->fetch_assoc());
-        } else {
-            $this->setData(array());
+        if(isset($id)) {
+            if ($result = $this->conexion->query("SELECT * FROM productos WHERE id = {$id}")) {
+                $row = $result->fetch_assoc();
+    
+                if(!is_null($row)) {
+                    foreach($row as $key => $value) {
+                        $this->data[$key] = $value;
+                    }
+                }
+                $result->free();
+            } else {
+                die('Query Error: ' . mysqli_error($this->conexion));
+            }
         }
     }
 }

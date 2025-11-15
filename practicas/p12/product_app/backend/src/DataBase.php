@@ -5,11 +5,16 @@ abstract class DataBase {
     protected $conexion;
     protected $data;
 
-    public function __construct($user, $pass, $db) {
-        $this->conexion = new \mysqli('localhost', $user, $pass, $db);
-        
-        if ($this->conexion->connect_error) {
-            die("Error de conexión: " . $this->conexion->connect_error);
+    public function __construct($db, $user = 'root', $pass = 'daniela20') {
+        $this->conexion = @mysqli_connect(
+            'localhost',
+            $user,
+            $pass,
+            $db
+        );
+
+        if(!$this->conexion) {
+            die('¡Base de datos NO conectada! Error: ' . mysqli_connect_error());
         }
         
         $this->conexion->set_charset("utf8");
@@ -17,7 +22,7 @@ abstract class DataBase {
     }
 
     public function getData() {
-        return json_encode($this->data);
+        return json_encode($this->data, JSON_PRETTY_PRINT);
     }
 
     protected function setData($data) {
@@ -25,8 +30,8 @@ abstract class DataBase {
     }
 
     public function __destruct() {
-        if ($this->conexion) {
-            $this->conexion->close();
+        if($this->conexion) {
+            mysqli_close($this->conexion);
         }
     }
 }

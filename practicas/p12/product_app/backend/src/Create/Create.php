@@ -6,13 +6,13 @@ use App\DataBase;
 class Create extends DataBase {
     
     public function __construct($db = 'marketzone') {
-        parent::__construct('root', 'root', $db);
+        parent::__construct($db, 'root', 'daniela20');               
     }
 
     public function add($object) {
         $this->data = array(
             'status' => 'error',
-            'message' => 'Error al agregar el producto'
+            'message' => 'Ya existe un producto con ese nombre'
         );
 
         if (isset($object->nombre)) {
@@ -22,25 +22,26 @@ class Create extends DataBase {
 
             if ($result->num_rows == 0) {
                 // Insertar el nuevo producto
-                $sql = "INSERT INTO productos (nombre, marca, modelo, precio, detalles, unidades, imagen) 
-                        VALUES (
-                            '{$object->nombre}', 
-                            '{$object->marca}', 
-                            '{$object->modelo}', 
-                            {$object->precio}, 
-                            '{$object->detalles}', 
-                            {$object->unidades}, 
-                            '{$object->imagen}'
-                        )";
+                $sql = "INSERT INTO productos VALUES (
+                    null,
+                    '{$object->nombre}', 
+                    '{$object->marca}', 
+                    '{$object->modelo}', 
+                    {$object->precio}, 
+                    '{$object->detalles}', 
+                    {$object->unidades}, 
+                    '{$object->imagen}',
+                    0
+                )";
 
                 if ($this->conexion->query($sql)) {
                     $this->data['status'] = 'success';
-                    $this->data['message'] = 'Producto agregado exitosamente';
-                    $this->data['id'] = $this->conexion->insert_id;
+                    $this->data['message'] = 'Producto agregado';
+                } else {
+                    $this->data['message'] = 'ERROR: ' . mysqli_error($this->conexion);
                 }
-            } else {
-                $this->data['message'] = 'El producto ya existe';
             }
+            $result->free();
         }
     }
 }

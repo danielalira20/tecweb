@@ -1,8 +1,12 @@
 <?php
-    use TECWEB\MYAPI\Products;
-    require_once __DIR__.'/myapi/Products.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-    $productos = new Products('marketzone');
-    $productos->delete( $_POST['id'] );
-    echo $productos->getData();
-?>
+use App\Delete\Delete;
+
+header('Content-Type: application/json');
+
+$id = $_POST['id'] ?? 0;
+
+$delete = new Delete();
+$delete->delete($id);
+echo $delete->getData();
