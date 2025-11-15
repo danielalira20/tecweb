@@ -8,5 +8,7 @@ header('Content-Type: application/json');
 $search = $_GET['search'] ?? '';
 
 $read = new Read();
-$read->search($search);
-echo $read->getData();
+$resultado = $read->search($search);
+
+echo json_encode($resultado);
+

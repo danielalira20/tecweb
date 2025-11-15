@@ -8,5 +8,6 @@ header('Content-Type: application/json');
 $id = $_POST['id'] ?? 0;
 
 $delete = new Delete();
-$delete->delete($id);
-echo $delete->getData();
+$resultado = $delete->delete($id);
+
+echo json_encode($resultado);

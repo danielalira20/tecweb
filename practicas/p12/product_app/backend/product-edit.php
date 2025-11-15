@@ -5,12 +5,16 @@ use App\Update\Update;
 
 header('Content-Type: application/json');
 
-$producto = json_decode(file_get_contents('php://input'));
+$producto = json_decode(file_get_contents('php://input'), true);
 
 if (!empty($producto)) {
     $update = new Update();
-    $update->edit($producto);
-    echo $update->getData();
+    $resultado = $update->edit($producto);
+
+    echo json_encode($resultado);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Datos inválidos']);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Datos inválidos'
+    ]);
 }
