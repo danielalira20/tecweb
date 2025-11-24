@@ -26,6 +26,18 @@ $app->post('/pruebapost', function (Request $request, Response $response) {
     return $response;
 });
 
+$app->get('/testison', function (Request $request, Response $response) {
+    $data = [
+        "ok" => true,
+        "equipo" => ["Daniela", "Integrante2"]
+    ];
+    $payload = json_encode($data);
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+
+$app->addErrorMiddleware(true, true, true);
 $app->run();
 
 
