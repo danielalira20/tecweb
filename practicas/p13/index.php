@@ -13,6 +13,13 @@ $app->get('/', function (Request $request, Response $response) {
     return $response;
 });
 
+$app->get('/hola/{nombre}', function (Request $request, Response $response, $args) {
+    $nombre = $args['nombre'];
+    $response->getBody()->write("Hola, $nombre");
+    return $response;
+});
+
+
 $app->run();
 
 
