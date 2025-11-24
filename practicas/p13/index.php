@@ -19,11 +19,14 @@ $app->get('/hola/{nombre}', function (Request $request, Response $response, $arg
     return $response;
 });
 
-$app->post('/pruebapost', function (Request $request, Response $response) {
-    $data = $request->getParsedBody();
-    $mensaje = $data['mensaje'] ?? 'Sin mensaje recibido';
-    $response->getBody()->write("Mensaje recibido: $mensaje");
-    return $response;
+//mensaje desde formulario
+$app->post("/pruebapost", function($request, $response,$args){
+    $reqPost = $request->getParsedBody(); 
+    $val1 = $reqPost["val1"];
+    $val2 = $reqPost["val2"];
+
+    $response->getBody()->write("valores:" . $val1 . " ".$val2 ); 
+    return $response; 
 });
 
 $app->get('/testison', function (Request $request, Response $response) {
