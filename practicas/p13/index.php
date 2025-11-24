@@ -36,7 +36,7 @@ $app->get('/testison', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->post('/testison', function (Request $request, Response $response) {
+$app->post('/testjson', function (Request $request, Response $response) {
     $data = [
         "ok" => true,
         "mensaje" => $request->getParsedBody()['mensaje'] ?? '',
