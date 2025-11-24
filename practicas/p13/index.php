@@ -19,6 +19,12 @@ $app->get('/hola/{nombre}', function (Request $request, Response $response, $arg
     return $response;
 });
 
+$app->post('/pruebapost', function (Request $request, Response $response) {
+    $data = $request->getParsedBody();
+    $mensaje = $data['mensaje'] ?? 'Sin mensaje recibido';
+    $response->getBody()->write("Mensaje recibido: $mensaje");
+    return $response;
+});
 
 $app->run();
 
